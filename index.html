@@ -1,0 +1,806 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<title>Model Usage</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@500;700;800&family=JetBrains+Mono:wght@500;700&family=Cinzel:wght@600;700&family=Atkinson+Hyperlegible:wght@400;700&family=Instrument+Sans:wght@400;500;600&display=swap">
+<style>
+/* Kawaii sticker sheet, single light theme by choice: soft vanilla ground, yellow as an accent, cream stickers with thick ink outlines
+   and solid offset shadows, one mascot per provider whose face shows how close it is to its limit.
+   All text is ink on cream/yellow (well above WCAG AA); colour fills never carry text. */
+:root {
+  color-scheme: light;
+  --ground: #fff7dc;      /* soft vanilla page */
+  --paper: #fffdf6;       /* sticker white-cream */
+  --paper-2: #fff4cf;     /* pale yellow inset */
+  --sun: #ffd84a;         /* yellow, used only as an accent */
+  --ink: #241a05;         /* outlines + primary text, 15:1 on cream */
+  --ink-2: #4a3a12;       /* secondary text, 9:1 on cream */
+  --ink-3: #6b5520;       /* tertiary text, 6:1 on cream, 5:1 on yellow */
+  --good: #13703c; --warn: #9a4a00; --bad: #b3202a;   /* semantic text, all ≥5.5:1 on cream */
+  --good-fill: #8ee0a8; --warn-fill: #ffb44d; --bad-fill: #ff7b86;
+  --blush: #ff9fb8;
+  --m-opus: #ff9e7a; --m-sonnet: #ffd84a; --m-haiku: #8fd3ff; --m-fable: #c3a8ff; --m-other: #e8dcc0;
+  --p-claude: #ff9e7a; --p-kimi: #8fd3ff; --p-gemini: #c3a8ff; --p-openrouter: #8ee6b0;
+  --display: "Fredoka", "Arial Rounded MT Bold", ui-rounded, system-ui, sans-serif;
+  --body: "Nunito", ui-rounded, system-ui, -apple-system, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --line: 2px solid var(--ink);
+  --pop: 3px 3px 0 var(--ink);
+  --r: 22px;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--ground) radial-gradient(circle, rgba(255, 196, 0, .18) 1.6px, transparent 2px) 0 0 / 24px 24px;
+  color: var(--ink); font-family: var(--body); font-size: 15px; line-height: 1.5; font-weight: 500;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 28px 56px;
+}
+.wrap { max-width: 1140px; margin: 0 auto; display: grid; gap: 36px; }
+.num { font-family: var(--mono); font-variant-numeric: tabular-nums; font-weight: 500; }
+:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
+
+header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px 24px; }
+.brand { display: flex; align-items: center; gap: 14px; }
+.brand svg { flex: none; }
+.kicker { font-family: var(--display); font-weight: 600; font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-2); }
+h1 { margin: 0; font-family: var(--display); font-weight: 700; font-size: clamp(32px, 6vw, 46px); line-height: 1; letter-spacing: -.01em; text-wrap: balance; }
+.stamp { background: var(--sun); border: var(--line); border-radius: 999px; padding: 8px 16px; box-shadow: var(--pop); font-size: 14px; color: var(--ink-2); font-weight: 700; }
+.stamp b { color: var(--ink); }
+.stamp-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.stale { margin-left: 8px; padding: 1px 9px; border-radius: 999px; background: var(--warn-fill); border: 2px solid var(--ink); color: var(--ink); font-size: 12px; }
+
+section { display: grid; gap: 14px; min-width: 0; }
+.sec-head { display: flex; align-items: baseline; justify-content: space-between; gap: 6px 14px; flex-wrap: wrap; }
+h2 { margin: 0; font-family: var(--display); font-weight: 700; font-size: 22px; display: flex; align-items: center; gap: 10px; }
+h2::before { content: ""; width: 14px; height: 14px; border-radius: 50%; background: var(--sun); border: var(--line); flex: none; }
+.hint { color: var(--ink-3); font-size: 13px; font-weight: 700; }
+
+.sticker { background: var(--paper); border: var(--line); border-radius: var(--r); box-shadow: var(--pop); }
+
+.limits { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 18px; }
+.panel { padding: 18px; display: grid; gap: 14px; align-content: start; min-width: 0; }
+.panel-head { display: flex; align-items: center; gap: 12px; }
+.panel-head .who { min-width: 0; display: grid; }
+.panel-head h3 { margin: 0; font-family: var(--display); font-weight: 700; font-size: 20px; line-height: 1.1; }
+.mood { font-size: 13px; font-weight: 700; color: var(--ink-3); }
+.chip { margin-left: auto; font-size: 12px; font-weight: 800; padding: 3px 10px; border-radius: 999px; background: var(--sun); border: 2px solid var(--ink); white-space: nowrap; }
+.meter { display: grid; gap: 6px; }
+.meter-top { display: flex; justify-content: space-between; gap: 8px; font-size: 14px; font-weight: 700; color: var(--ink-2); }
+.meter-top .pct { color: var(--ink); font-weight: 700; }
+.bar { height: 16px; border-radius: 999px; background: var(--paper-2); border: 2px solid var(--ink); overflow: hidden; }
+.bar > i { display: block; height: 100%; border-radius: 999px; background: var(--good-fill); border-right: 2px solid var(--ink); }
+.bar > i.warn { background: var(--warn-fill); } .bar > i.bad { background: var(--bad-fill); }
+.bar > i.zero { border-right: 0; }
+.meter-foot { font-size: 12px; font-weight: 700; color: var(--ink-3); }
+.note { font-size: 13px; color: var(--ink-2); margin: 0; }
+.acct { display: flex; justify-content: space-between; gap: 8px; padding: 9px 12px; border-radius: 14px; background: var(--paper-2); border: 2px solid var(--ink); font-size: 14px; font-weight: 700; }
+
+.table-scroll { overflow-x: auto; }
+table { width: 100%; border-collapse: separate; border-spacing: 0; min-width: 860px; }
+th, td { text-align: left; padding: 12px 14px; border-bottom: 2px dashed rgba(36, 26, 5, .22); white-space: nowrap; }
+th { font-family: var(--display); font-weight: 600; font-size: 13px; color: var(--ink-2); background: var(--paper-2); border-bottom: var(--line); }
+th:first-child { border-top-left-radius: calc(var(--r) - 3px); } th:last-child { border-top-right-radius: calc(var(--r) - 3px); }
+td { font-size: 14px; color: var(--ink-2); font-weight: 700; }
+td.r, th.r { text-align: right; }
+tr:last-child td { border-bottom: 0; }
+.model { color: var(--ink); font-family: var(--display); font-weight: 600; font-size: 15px; }
+.sub { color: var(--ink-3); font-size: 12px; margin-left: 6px; font-weight: 700; }
+.dot { display: inline-block; width: 13px; height: 13px; border-radius: 50%; margin-right: 8px; vertical-align: -1px; border: 2px solid var(--ink); }
+.pill { display: inline-block; min-width: 56px; text-align: center; padding: 2px 9px; border-radius: 999px; font-size: 13px; border: 2px solid var(--ink); background: var(--paper); color: var(--ink); }
+.pill.good { background: var(--good-fill); } .pill.warn { background: var(--warn-fill); } .pill.bad { background: var(--bad-fill); }
+.pill.none { background: var(--paper-2); color: var(--ink-2); font-family: var(--body); }
+.split { display: flex; width: 120px; height: 14px; border-radius: 999px; overflow: hidden; background: var(--paper-2); border: 2px solid var(--ink); }
+.split i { display: block; height: 100%; }
+.split .u { background: var(--good-fill); } .split .f { background: var(--warn-fill); } .split .d { background: var(--bad-fill); }
+.split-cell { display: flex; align-items: center; gap: 10px; color: var(--ink); }
+
+.chart { padding: 18px; display: grid; gap: 12px; }
+.chart svg { width: 100%; height: auto; display: block; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: 13px; font-weight: 800; color: var(--ink); }
+
+.recent { display: grid; overflow: hidden; }
+.row { display: grid; grid-template-columns: 104px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 12px 16px; border-bottom: 2px dashed rgba(36, 26, 5, .22); font-size: 14px; }
+.row:last-child { border-bottom: 0; }
+.row .when { color: var(--ink-3); font-size: 13px; }
+.row .what { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--ink-2); font-weight: 700; }
+.row .what b { color: var(--ink); font-family: var(--display); font-weight: 600; }
+.verdict { font-size: 12px; font-weight: 800; padding: 2px 10px; border-radius: 999px; border: 2px solid var(--ink); background: var(--paper-2); color: var(--ink); white-space: nowrap; }
+.verdict.used { background: var(--good-fill); } .verdict.fixed { background: var(--warn-fill); }
+.verdict.discarded, .verdict.failed { background: var(--bad-fill); }
+
+.how { padding: 18px 20px; display: grid; gap: 10px; color: var(--ink-2); font-size: 14px; font-weight: 700; }
+.how code { font-family: var(--mono); font-size: 13px; background: var(--paper-2); border: 2px solid var(--ink); color: var(--ink); padding: 0 6px; border-radius: 8px; }
+.empty { padding: 28px 18px; color: var(--ink-2); text-align: center; font-size: 14px; font-weight: 700; }
+
+.mascot { flex: none; }
+
+/* Delegation savings */
+.savings { padding: 18px 20px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: 16px 28px; align-items: center; }
+.sav-big { display: grid; gap: 2px; }
+.sav-big .eyebrow { font: 600 13px var(--display); letter-spacing: .06em; text-transform: uppercase; color: var(--ink-2); }
+.sav-big .figure { font: 700 clamp(36px, 6vw, 52px)/1 var(--display); letter-spacing: -.02em; }
+.sav-big .figure.pos { color: var(--good); } .sav-big .figure.neg { color: var(--ink-2); }
+.sav-big .line { font-size: 13px; font-weight: 700; color: var(--ink-3); }
+.sav-chips { display: flex; flex-wrap: wrap; gap: 8px; align-content: center; }
+.sav-chip { display: inline-flex; align-items: center; gap: 6px; padding: 4px 11px; border-radius: 999px; border: 2px solid var(--ink); background: var(--paper-2); font-size: 13px; font-weight: 800; }
+.sav-chip .num { color: var(--ink); } .sav-chip .pos { color: var(--good); } .sav-chip .neg { color: var(--ink-2); }
+.sav-chip.tag { background: var(--paper); }
+.sav-note { grid-column: 1 / -1; margin: 0; font-size: 12px; font-weight: 700; color: var(--ink-3); }
+@media (max-width: 640px) { .savings { grid-template-columns: 1fr; } }
+td .pos { color: var(--good); } td .neg { color: var(--ink-2); }
+
+/* Claude by model */
+.cm { padding: 18px 20px; display: grid; gap: 16px; }
+.cm-bar { display: flex; height: 26px; border: var(--line); border-radius: 999px; overflow: hidden; background: var(--paper-2); }
+.cm-bar i { display: block; height: 100%; min-width: 6px; border-right: 2px solid var(--ink); }
+.cm-bar i:last-child { border-right: 0; }
+.cm-rows { display: grid; gap: 2px; }
+.cm-row { display: grid; grid-template-columns: minmax(120px, 1.2fr) 64px repeat(3, minmax(80px, 1fr)); gap: 12px; align-items: center; padding: 9px 4px; border-bottom: 2px dashed rgba(36, 26, 5, .18); font-size: 14px; font-weight: 700; color: var(--ink-2); }
+.cm-row:last-child { border-bottom: 0; }
+.cm-row.head { font: 600 12px var(--display); color: var(--ink-3); padding-block: 0 6px; }
+.cm-row .name { color: var(--ink); font-family: var(--display); font-weight: 600; font-size: 15px; }
+.cm-row .r { text-align: right; }
+.cm-row .share { color: var(--ink); }
+@media (max-width: 560px) {
+  .cm-row { grid-template-columns: minmax(0, 1fr) 56px 90px; }
+  .cm-row > :nth-child(4), .cm-row > :nth-child(5) { display: none; }
+}
+
+/* Hero: the one number that matters this week */
+.hero { display: grid; grid-template-columns: auto minmax(0, 1fr) minmax(220px, 300px); gap: 22px 28px; align-items: center; padding: 24px 26px; transform: rotate(-.4deg); }
+.hero-face { position: relative; }
+.hero-face .bubble { position: absolute; left: 78px; top: -10px; background: var(--sun); border: var(--line); border-radius: 14px 14px 14px 4px; padding: 3px 10px; font: 700 13px var(--display); white-space: nowrap; box-shadow: 2px 2px 0 var(--ink); }
+.hero-big { display: grid; gap: 4px; min-width: 0; }
+.hero-big .eyebrow { font: 600 13px var(--display); letter-spacing: .06em; text-transform: uppercase; color: var(--ink-2); }
+.hero-big .figure { font: 700 clamp(56px, 10vw, 84px)/0.9 var(--display); letter-spacing: -.03em; }
+.hero-big .figure small { font-size: .38em; letter-spacing: 0; color: var(--ink-2); margin-left: 6px; }
+.hero-big .line { font-size: 15px; font-weight: 700; color: var(--ink-2); text-wrap: pretty; }
+.hero-big .line b { color: var(--ink); }
+.pace { display: grid; gap: 10px; background: var(--paper-2); border: var(--line); border-radius: 18px; padding: 14px 16px; }
+.pace-track { position: relative; height: 18px; border-radius: 999px; background: var(--paper); border: 2px solid var(--ink); overflow: visible; }
+.pace-track .used { position: absolute; inset: 0 auto 0 0; border-radius: 999px; background: var(--good-fill); border-right: 2px solid var(--ink); }
+.pace-track .used.warn { background: var(--warn-fill); } .pace-track .used.bad { background: var(--bad-fill); }
+.pace-track .now { position: absolute; top: -7px; bottom: -7px; width: 0; border-left: 2.5px dashed var(--ink); }
+.pace-track .now::after { content: "today"; position: absolute; top: -26px; left: 0; translate: -50% 0; font: 700 11px/1 var(--mono); color: var(--paper); background: var(--ink); padding: 4px 7px 3px; border-radius: 999px; white-space: nowrap; }
+.pace { padding-top: 26px; }
+.pace-legend { display: flex; justify-content: space-between; gap: 8px; font-size: 12px; font-weight: 800; color: var(--ink-2); }
+.pace-verdict { font: 700 14px var(--display); }
+.pace-verdict.good { color: var(--good); } .pace-verdict.ahead { color: var(--ink); }
+
+/* Sticker sheet: slight tilts, straighten on hover */
+.limits .panel:nth-child(4n+1) { transform: rotate(-.6deg); }
+.limits .panel:nth-child(4n+2) { transform: rotate(.5deg); }
+.limits .panel:nth-child(4n+3) { transform: rotate(-.3deg); }
+.limits .panel:nth-child(4n+4) { transform: rotate(.7deg); }
+.panel, .hero { transition: transform .25s cubic-bezier(.3, 1.4, .5, 1), box-shadow .25s; }
+.limits .panel:hover, .hero:hover { transform: rotate(0) translateY(-2px); box-shadow: 5px 5px 0 var(--ink); }
+
+/* Section heading squiggle */
+h2 { position: relative; padding-bottom: 6px; }
+h2::after { content: ""; position: absolute; left: 24px; right: 0; bottom: 0; height: 6px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='6'%3E%3Cpath d='M0 3q4-4 8 0t8 0' fill='none' stroke='%23ffc400' stroke-width='2.2' stroke-linecap='round'/%3E%3C/svg%3E") repeat-x; }
+
+/* Table comfort */
+tbody tr:nth-child(even) td { background: rgba(255, 216, 74, .07); }
+tbody tr:hover td { background: var(--paper-2); }
+td:first-child, th:first-child { position: sticky; left: 0; z-index: 1; }
+td:first-child { background: var(--paper); }
+tbody tr:nth-child(even) td:first-child { background: #fffaea; }
+
+/* Load: stickers pop in from a visible resting state */
+@media (prefers-reduced-motion: no-preference) {
+  .wrap > * { animation: pop .5s cubic-bezier(.3, 1.5, .5, 1) both; }
+  .wrap > :nth-child(2) { animation-delay: .06s; } .wrap > :nth-child(3) { animation-delay: .12s; }
+  .wrap > :nth-child(4) { animation-delay: .18s; } .wrap > :nth-child(5) { animation-delay: .24s; }
+  .wrap > :nth-child(6) { animation-delay: .3s; } .wrap > :nth-child(7) { animation-delay: .36s; }
+  @keyframes pop { from { translate: 0 10px; scale: .985; } }
+}
+@media (prefers-reduced-motion: reduce) { .panel, .hero { transition: none; } }
+@media (max-width: 760px) {
+  .hero { grid-template-columns: auto minmax(0, 1fr); }
+  .pace { grid-column: 1 / -1; }
+}
+@media (max-width: 420px) {
+  .hero { grid-template-columns: 1fr; padding: 20px; }
+  .hero-face .bubble { left: 74px; }
+}
+/* Mascot personalities (motion drafted by OpenRouter Laguna S, corrected): slow, calm, never frantic. */
+@media (prefers-reduced-motion: no-preference) {
+  .mascot .body, .mascot .body > *, .mascot .eyes { transform-box: fill-box; transform-origin: center; }
+  .mascot .eyes { animation: m-blink 5s ease-in-out infinite; }
+  .mascot-claude .eyes { animation-delay: .4s; } .mascot-kimi .eyes { animation-delay: 1.7s; }
+  .mascot-gemini .eyes { animation-delay: 3s; } .mascot-openrouter .eyes { animation-delay: 2.3s; }
+
+  /* Claude: warm and steady, a little sun glowing */
+  .mascot-claude .body { animation: m-glow-sway 6s ease-in-out infinite; }
+  /* Kimi: dreamy, the moon rocks like a cradle and the star twinkles on its own beat */
+  .mascot-kimi .body > path:nth-child(1) { transform-origin: 60% 100%; animation: m-rock 7s ease-in-out infinite; }
+  .mascot-kimi .body > path:nth-child(2) { animation: m-twinkle 4s ease-in-out .5s infinite; }
+  /* Gemini: playful twins bobbing out of phase, as if chatting */
+  .mascot-gemini .body > path:nth-child(1) { animation: m-bob 4s ease-in-out infinite; }
+  .mascot-gemini .body > path:nth-child(2) { animation: m-bob 4s ease-in-out -2s infinite; }
+  /* OpenRouter: busy helper, signal arcs pulse outward, antenna tips glow, the occasional hop */
+  .mascot-openrouter .body > path:nth-child(8) { animation: m-pulse 3s ease-in-out infinite; }
+  .mascot-openrouter .body > path:nth-child(9) { animation: m-pulse 3s ease-in-out .5s infinite; }
+  .mascot-openrouter .body > circle { animation: m-tip 3s ease-in-out infinite; }
+  .mascot-openrouter .body > circle:nth-of-type(2) { animation-delay: 1.5s; }
+  .mascot-openrouter .body { animation: m-hop 7s ease-in-out infinite; }
+
+  /* Calm: same personality, slower */
+  .mascot.calm .body, .mascot.calm .body > * { animation-duration: 10s; }
+  /* Sleepy: just slow breathing, eyes stay closed-ish and still */
+  .mascot.sleepy .body > *, .mascot.sleepy .eyes { animation: none; }
+  .mascot.sleepy .body { animation: m-breathe 9s ease-in-out infinite; }
+
+  /* Hovering the card: one happy wiggle, then back to normal */
+  .panel:hover .mascot:not(.sleepy), .hero:hover .mascot:not(.sleepy) { animation: m-wiggle .9s ease-in-out 1; }
+}
+@keyframes m-blink { 0%, 92%, 100% { transform: scaleY(1); } 96% { transform: scaleY(.1); } }
+@keyframes m-glow-sway { 0%, 100% { transform: scale(1) rotate(0); } 50% { transform: scale(1.04) rotate(2deg); } }
+@keyframes m-breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.025); } }
+@keyframes m-rock { 0%, 100% { transform: rotate(-4deg); } 50% { transform: rotate(4deg); } }
+@keyframes m-twinkle { 0%, 100% { transform: scale(1) rotate(0); } 50% { transform: scale(1.2) rotate(15deg); } }
+@keyframes m-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-2.5px); } }
+@keyframes m-pulse { 0%, 100% { opacity: .45; } 50% { opacity: 1; } }
+@keyframes m-tip { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.18); } }
+@keyframes m-hop { 0%, 88%, 100% { transform: translateY(0); } 92% { transform: translateY(-3px); } 96% { transform: translateY(0); } }
+@keyframes m-wiggle { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(-6deg); } 75% { transform: rotate(6deg); } }
+@media (max-width: 520px) {
+  .row { grid-template-columns: 1fr auto; }
+  .row .when { grid-column: 1 / -1; }
+  .stamp-row { width: 100%; } .stamp { flex: 1; text-align: center; }
+}
+/* ===== Skin picker ===== */
+.skin-pick { display: inline-flex; align-items: center; gap: 8px; font: 700 13px var(--body); color: var(--ink-2); }
+.skin-pick select { font: 800 14px var(--body); color: var(--ink); background: var(--paper); border: var(--line); border-radius: 999px; padding: 7px 34px 7px 14px; box-shadow: var(--pop); cursor: pointer; appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23241a05' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 13px center; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.sprite { image-rendering: pixelated; flex: none; }
+.avatar { flex: none; }
+
+/* ===== Pixel Quest: elven forest, parchment cards in wooden frames, gold leaf ===== */
+:root[data-skin="quest"] {
+  --ground: #0f2a1d; --paper: #f3e9cf; --paper-2: #e6d6ae; --sun: #e8c15a;
+  --ink: #2b1d0e; --ink-2: #4a3520; --ink-3: #5f4628;
+  --good: #2f6b2a; --warn: #8a5a00; --bad: #9e2a1f;
+  --good-fill: #5f9e4a; --warn-fill: #e8c15a; --bad-fill: #c0392b; --blush: #e8a1a1;
+  --p-claude: #e07b39; --p-kimi: #7fa7d9; --p-gemini: #a98bd6; --p-openrouter: #6fbf5a;
+  --m-opus: #e07b39; --m-sonnet: #e8c15a; --m-haiku: #7fa7d9; --m-fable: #a98bd6; --m-other: #b9a77f;
+  --display: "Cinzel", "Iowan Old Style", Georgia, serif;
+  --body: "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "Atkinson Hyperlegible", ui-monospace, monospace;
+  --fairy: #f7a8d8; --lilac: #c9a8f0;
+  --line: 3px solid #3b2a17; --pop: 4px 4px 0 #081a11; --r: 0px;
+}
+:root[data-skin="quest"] body {
+  background-color: #0f2a1d;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' shape-rendering='crispEdges'%3E%3Cg fill='%23173d29'%3E%3Cpath d='M14 18h4v2h2v4h-2v2h-4v-2h-2v-4h2z'/%3E%3Cpath d='M78 60h4v2h2v4h-2v2h-4v-2h-2v-4h2z'/%3E%3Cpath d='M40 96h3v2h2v3h-2v2h-3v-2h-2v-3h2z'/%3E%3C/g%3E%3Cg fill='%2321503a'%3E%3Cpath d='M100 20h3v2h2v3h-2v2h-3v-2h-2v-3h2z'/%3E%3Cpath d='M52 34h2v2h2v2h-2v2h-2v-2h-2v-2h2z'/%3E%3C/g%3E%3C/svg%3E");
+  font-size: 17px; line-height: 1.55; font-weight: 400; }
+:root[data-skin="quest"] * { border-radius: 0 !important; }
+:root[data-skin="quest"] h1 { font-size: clamp(30px, 5.5vw, 44px); font-weight: 700; line-height: 1.15; letter-spacing: .03em; color: #f5d77a; text-shadow: 3px 3px 0 #081a11, 0 0 18px rgba(245, 215, 122, .4); }
+:root[data-skin="quest"] h2 { font-size: 21px; font-weight: 700; letter-spacing: .04em; color: #f5d77a; text-shadow: 0 0 12px rgba(245, 215, 122, .3); }
+:root[data-skin="quest"] h2::before { width: 0; height: 0; border: 0; background: none; border-left: 10px solid #6fbf5a; border-top: 7px solid transparent; border-bottom: 7px solid transparent; }
+:root[data-skin="quest"] h2::after { background: repeating-linear-gradient(90deg, #e8c15a 0 4px, transparent 4px 8px); height: 4px; }
+:root[data-skin="quest"] .kicker, :root[data-skin="quest"] .hint { color: #e9dfc0; font-weight: 500; }
+:root[data-skin="quest"] .kicker, :root[data-skin="quest"] .eyebrow, :root[data-skin="quest"] th, :root[data-skin="quest"] .cm-row.head { font-family: var(--body); font-weight: 700; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; }
+:root[data-skin="quest"] .panel-head h3 { font-family: var(--display); font-weight: 700; font-size: 19px; letter-spacing: .03em; }
+:root[data-skin="quest"] .model, :root[data-skin="quest"] .cm-row .name, :root[data-skin="quest"] .row .what b { font-family: var(--body); font-weight: 700; font-size: 16px; }
+:root[data-skin="quest"] :is(.meter-top, .acct, td, .row, .cm-row, .legend, .pace-legend, .note, .hero-big .line, .sav-big .line, .sav-note, .how, .mood) { font-weight: 400; }
+:root[data-skin="quest"] :is(.meter-top .pct, .pace-verdict, .acct .num, .meter-top) { font-weight: 700; }
+:root[data-skin="quest"] .hero-big .figure, :root[data-skin="quest"] .sav-big .figure { font-family: var(--body); font-weight: 700; font-size: clamp(48px, 8vw, 70px); letter-spacing: -.02em; }
+:root[data-skin="quest"] .sav-big .figure.pos { color: #2f6b2a; }
+:root[data-skin="quest"] .stamp, :root[data-skin="quest"] .chip, :root[data-skin="quest"] .sav-chip { background: #2f5e2a; color: #f3e9cf; border: 3px solid #3b2a17; font-weight: 600; }
+:root[data-skin="quest"] .stamp b, :root[data-skin="quest"] .sav-chip .num, :root[data-skin="quest"] .sav-chip .pos, :root[data-skin="quest"] .sav-chip .neg { color: #f3e9cf; }
+:root[data-skin="quest"] .sav-chip.tag { background: #5f4628; }
+:root[data-skin="quest"] .stale { background: #c0392b; color: #f3e9cf; }
+:root[data-skin="quest"] .skin-pick select { background-color: #f3e9cf; color: #2b1d0e; border: 3px solid #3b2a17; font: 700 15px var(--body);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' shape-rendering='crispEdges'%3E%3Cpath d='M0 0h12v2H0zM2 2h8v2H2zM4 4h4v2H4z' fill='%233b2a17'/%3E%3C/svg%3E"); }
+:root[data-skin="quest"] .limits .panel, :root[data-skin="quest"] .hero, :root[data-skin="quest"] .limits .panel:hover, :root[data-skin="quest"] .hero:hover { transform: none; transition: none; }
+/* Limits as heart containers: red hearts = left, bark-dark hearts = used, draining from the right */
+:root[data-skin="quest"] .bar { height: 22px; border: 0; background: #c0392b; direction: rtl;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 9 8' shape-rendering='crispEdges'%3E%3Cpath d='M1 0h2v1h1v1h1V1h1V0h2v1h1v3H8v1H7v1H6v1H5v1H4V7H3V6H2V5H1V4H0V1h1z'/%3E%3C/svg%3E") 0 0 / 10% 100% repeat-x;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 9 8' shape-rendering='crispEdges'%3E%3Cpath d='M1 0h2v1h1v1h1V1h1V0h2v1h1v3H8v1H7v1H6v1H5v1H4V7H3V6H2V5H1V4H0V1h1z'/%3E%3C/svg%3E") 0 0 / 10% 100% repeat-x; }
+:root[data-skin="quest"] .bar > i, :root[data-skin="quest"] .bar > i.warn { background: #b9a77f; border: 0; }
+:root[data-skin="quest"] .acct, :root[data-skin="quest"] .pace, :root[data-skin="quest"] .how code { background: #e6d6ae; border: 3px solid #3b2a17; }
+:root[data-skin="quest"] .pace-track, :root[data-skin="quest"] .split, :root[data-skin="quest"] .cm-bar { border: 3px solid #3b2a17; background: #f3e9cf; }
+:root[data-skin="quest"] .pace-track .used, :root[data-skin="quest"] .pace-track .used.warn { background: repeating-linear-gradient(90deg, #5f9e4a 0 10px, #f3e9cf 10px 12px); border-right: 0; }
+:root[data-skin="quest"] .pace-track .now { border-left: 3px solid #3b2a17; }
+:root[data-skin="quest"] .pace-track .now::after { background: #3b2a17; color: #f3e9cf; font-family: var(--body); font-weight: 700; font-size: 12px; }
+:root[data-skin="quest"] .pill, :root[data-skin="quest"] .verdict { color: #2b1d0e; border: 3px solid #3b2a17; font-weight: 600; }
+:root[data-skin="quest"] .pill.none, :root[data-skin="quest"] .verdict.unrated { background: #e6d6ae; }
+:root[data-skin="quest"] .pill.bad, :root[data-skin="quest"] .verdict.discarded, :root[data-skin="quest"] .verdict.failed { background: #c0392b; color: #f3e9cf; }
+:root[data-skin="quest"] .verdict.used, :root[data-skin="quest"] .pill.good { background: #a9d18e; }
+:root[data-skin="quest"] .verdict.fixed, :root[data-skin="quest"] .pill.warn { background: #e8c15a; }
+:root[data-skin="quest"] .split .u { background: #5f9e4a; } :root[data-skin="quest"] .split .f { background: #e8c15a; } :root[data-skin="quest"] .split .d { background: #c0392b; }
+:root[data-skin="quest"] th { background: #e6d6ae; border-bottom: 3px solid #3b2a17; color: #2b1d0e; }
+:root[data-skin="quest"] td { border-bottom: 2px solid #d8c697; font-size: 16px; padding-block: 14px; }
+:root[data-skin="quest"] tbody tr:nth-child(even) td, :root[data-skin="quest"] tbody tr:nth-child(even) td:first-child { background: #efe2c2; }
+:root[data-skin="quest"] tbody tr:hover td { background: #e6d6ae; }
+:root[data-skin="quest"] td:first-child { background: #f3e9cf; }
+:root[data-skin="quest"] .row, :root[data-skin="quest"] .cm-row { border-bottom: 2px solid #d8c697; }
+:root[data-skin="quest"] .dot { border-color: #3b2a17; }
+:root[data-skin="quest"] .chart svg path { stroke: #3b2a17; stroke-width: 3; }
+:root[data-skin="quest"] .brand > svg path:first-child { fill: #e8c15a; }
+:root[data-skin="quest"] h2::before { border-left-color: var(--fairy); }
+:root[data-skin="quest"] .sticker { position: relative; }
+:root[data-skin="quest"] .sticker::after { content: ""; position: absolute; top: -8px; right: -8px; width: 13px; height: 13px; pointer-events: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 7 7' shape-rendering='crispEdges'%3E%3Cpath d='M3 0h1v2h1v1h2v1H5v1H4v2H3V5H2V4H0V3h2V2h1z' fill='%23f5d77a'/%3E%3Cpath d='M3 3h1v1H3z' fill='%23fff6dc'/%3E%3C/svg%3E") center / contain no-repeat; }
+:root[data-skin="quest"] .recent { overflow: visible; }
+:root[data-skin="quest"] body::before { content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background-image: radial-gradient(circle, #f5d77a 0 1.5px, transparent 2.5px), radial-gradient(circle, var(--fairy) 0 1.2px, transparent 2.2px), radial-gradient(circle, var(--lilac) 0 1px, transparent 2px);
+  background-size: 230px 190px, 180px 250px, 290px 210px; background-position: 30px 40px, 110px 90px, 70px 150px; opacity: .6; }
+:root[data-skin="quest"] .wrap { position: relative; z-index: 1; }
+@media (prefers-reduced-motion: no-preference) {
+  :root[data-skin="quest"] .wrap > * { animation: q-blip .4s steps(3) both; }
+  :root[data-skin="quest"] .sprite { animation: q-bob 1.2s steps(2) infinite; }
+  :root[data-skin="quest"] .limits .panel:nth-child(even) .sprite { animation-delay: -.6s; }
+  :root[data-skin="quest"] body::before { animation: q-twinkle 6s ease-in-out infinite alternate; }
+  @keyframes q-twinkle { 0% { opacity: .3; } 100% { opacity: .7; } }
+  @keyframes q-blip { from { translate: 0 8px; } }
+  @keyframes q-bob { 50% { translate: 0 -2px; } }
+}
+
+/* ===== Studio: clean, grown-up SaaS ===== */
+:root[data-skin="studio"] {
+  --ground: #f6f7f9; --paper: #ffffff; --paper-2: #f2f4f7; --sun: #0f766e;
+  --ink: #101828; --ink-2: #344054; --ink-3: #5d6b82;
+  --good: #067647; --warn: #93370d; --bad: #b42318;
+  --good-fill: #0f766e; --warn-fill: #f5b544; --bad-fill: #f97066; --blush: #fecdd6;
+  --p-claude: #0f766e; --p-kimi: #4f9e95; --p-gemini: #93c6bf; --p-openrouter: #cfe5e1;
+  --m-opus: #0f766e; --m-sonnet: #4f9e95; --m-haiku: #93c6bf; --m-fable: #cfe5e1; --m-other: #d0d5dd;
+  --display: "Instrument Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --body: "Instrument Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --line: 1px solid #e4e7ec; --pop: 0 1px 2px rgba(16, 24, 40, .05); --r: 12px;
+}
+:root[data-skin="studio"] body { background: #f6f7f9; font-weight: 400; }
+:root[data-skin="studio"] h1 { font-weight: 600; letter-spacing: -.025em; }
+:root[data-skin="studio"] h2 { font-size: 15px; font-weight: 600; padding-bottom: 0; }
+:root[data-skin="studio"] h2::before { width: 6px; height: 6px; border: 0; background: #0f766e; }
+:root[data-skin="studio"] h2::after { display: none; }
+:root[data-skin="studio"] .kicker, :root[data-skin="studio"] .eyebrow { font-weight: 500; letter-spacing: .04em; color: var(--ink-3); }
+:root[data-skin="studio"] :is(.hint, td, .meter-top, .meter-foot, .acct, .note, .row .what, .how, .sav-big .line, .cm-row, .mood, .legend, .pace-legend, .stamp, .sav-note, .hero-big .line) { font-weight: 500; }
+:root[data-skin="studio"] :is(.panel-head h3, .model, .cm-row .name, .row .what b, .hero-big .figure, .sav-big .figure, .pace-verdict) { font-weight: 600; }
+:root[data-skin="studio"] .hero-big .figure, :root[data-skin="studio"] .sav-big .figure { letter-spacing: -.04em; }
+:root[data-skin="studio"] .sav-big .figure.pos { color: #0f766e; }
+:root[data-skin="studio"] :is(.bar, .chip, .pill, .acct, .dot, .split, .verdict, .pace, .pace-track, .sav-chip, .stamp, .cm-bar, .how code, .skin-pick select) { border: 1px solid #e4e7ec; box-shadow: none; }
+:root[data-skin="studio"] :is(.chip, .stamp, .sav-chip, .sav-chip.tag) { background: #f2f4f7; color: var(--ink-2); }
+:root[data-skin="studio"] .stamp b { color: var(--ink); }
+:root[data-skin="studio"] :is(.bar > i, .cm-bar i, .pace-track .used) { border-right: 0; }
+:root[data-skin="studio"] .bar { height: 8px; background: #eaecf0; border: 0; }
+:root[data-skin="studio"] .pace-track { height: 10px; background: #eaecf0; border: 0; }
+:root[data-skin="studio"] .pace-track .now { border-left: 2px solid var(--ink); }
+:root[data-skin="studio"] .pace-track .now::after { font-weight: 500; color: var(--ink-3); }
+:root[data-skin="studio"] .pill, :root[data-skin="studio"] .verdict { font-weight: 600; }
+:root[data-skin="studio"] .pill.good, :root[data-skin="studio"] .verdict.used { background: #ecfdf3; color: #067647; border-color: #abefc6; }
+:root[data-skin="studio"] .pill.warn, :root[data-skin="studio"] .verdict.fixed { background: #fffaeb; color: #93370d; border-color: #fedf89; }
+:root[data-skin="studio"] .pill.bad, :root[data-skin="studio"] .verdict.discarded, :root[data-skin="studio"] .verdict.failed { background: #fef3f2; color: #b42318; border-color: #fecdca; }
+:root[data-skin="studio"] .split .u { background: #0f766e; } :root[data-skin="studio"] .split .f { background: #f5b544; } :root[data-skin="studio"] .split .d { background: #f97066; }
+:root[data-skin="studio"] :is(th, td, .row, .cm-row) { border-bottom: 1px solid #eaecf0; }
+:root[data-skin="studio"] th { background: #f9fafb; border-bottom: 1px solid #e4e7ec; font-weight: 500; color: var(--ink-3); }
+:root[data-skin="studio"] tbody tr:nth-child(even) td, :root[data-skin="studio"] tbody tr:nth-child(even) td:first-child { background: #fff; }
+:root[data-skin="studio"] tbody tr:hover td { background: #f9fafb; }
+:root[data-skin="studio"] .limits .panel, :root[data-skin="studio"] .hero, :root[data-skin="studio"] .limits .panel:hover, :root[data-skin="studio"] .hero:hover { transform: none; box-shadow: var(--pop); }
+:root[data-skin="studio"] .chart svg path { stroke: none; }
+:root[data-skin="studio"] .wrap > * { animation: none; }
+:root[data-skin="studio"] .skin-pick select { border-radius: 8px; font-weight: 500;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23344054' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); }
+/* Optical centring: Fredoka/Nunito/VT323 sit high in their line box, so pill text gets ~1px more room on top. */
+.chip { padding: 4px 10px 2px; }
+.pill { padding: 3px 9px 1px; }
+.verdict { padding: 3px 10px 1px; }
+.sav-chip { padding: 5px 11px 3px; }
+.stamp { padding: 9px 16px 7px; }
+.stale { padding: 2px 9px 0; }
+.skin-pick select { padding: 8px 34px 6px 14px; }
+:root[data-skin="studio"] .chip { padding: 3px 10px; }
+:root[data-skin="studio"] .pill { padding: 2px 9px; }
+:root[data-skin="studio"] .verdict { padding: 2px 10px; }
+:root[data-skin="studio"] .sav-chip { padding: 4px 11px; }
+:root[data-skin="studio"] .stamp { padding: 8px 16px; }
+:root[data-skin="studio"] .stale { padding: 1px 9px; }
+:root[data-skin="studio"] .skin-pick select { padding: 7px 34px 7px 14px; }
+
+/* Studio refinements: no mascot star, neutral avatars, badge readable on light */
+:root[data-skin="studio"] .brand > svg { display: none; }
+:root[data-skin="studio"] .pace-track .now::after { background: var(--ink); color: #fff; font-family: var(--body); font-weight: 600; border-radius: 6px; }
+:root[data-skin="studio"] .avatar rect { fill: #f2f4f7; stroke: #e4e7ec; }
+/* Fit polish */
+.acct { flex-wrap: wrap; row-gap: 2px; }
+.acct > span { white-space: nowrap; }
+@media (max-width: 1080px) { .limits { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 720px) { .limits { grid-template-columns: 1fr; } }
+:root[data-skin="quest"] .pace-verdict { font-family: var(--body); font-weight: 700; font-size: 15px; line-height: 1.45; }
+/* Pixel Quest: illuminated parchment, moonlight, leaf markers */
+:root[data-skin="quest"] .sticker { box-shadow: inset 0 0 0 3px #f3e9cf, inset 0 0 0 5px rgba(232, 193, 90, .75), 4px 4px 0 #081a11; }
+:root[data-skin="quest"] .table-scroll { box-shadow: 4px 4px 0 #081a11; }
+:root[data-skin="quest"] body { background-image: radial-gradient(ellipse 90% 45% at 50% -5%, rgba(214, 240, 200, .16), transparent 70%),
+  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' shape-rendering='crispEdges'%3E%3Cg fill='%23173d29'%3E%3Cpath d='M14 18h4v2h2v4h-2v2h-4v-2h-2v-4h2z'/%3E%3Cpath d='M78 60h4v2h2v4h-2v2h-4v-2h-2v-4h2z'/%3E%3Cpath d='M40 96h3v2h2v3h-2v2h-3v-2h-2v-3h2z'/%3E%3C/g%3E%3C/svg%3E"); }
+:root[data-skin="quest"] h2::before { width: 16px; height: 16px; border: 0; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8' shape-rendering='crispEdges'%3E%3Cpath d='M5 0h3v3H7v2H6v1H4v1H2v1H0V7h1V5h1V4h1V2h1V1h1z' fill='%236fbf5a'/%3E%3Cpath d='M1 7h1V6h1V5h1V4h1V3h1v1H5v1H4v1H3v1H2v1H1z' fill='%233e7a33'/%3E%3C/svg%3E") center / contain no-repeat; }
+:root[data-skin="quest"] .chip, :root[data-skin="quest"] .sav-chip, :root[data-skin="quest"] .stamp { box-shadow: none; }
+:root[data-skin="quest"] .panel-head { gap: 14px; }
+/* Card headers wrap instead of pushing content out of narrow cards */
+.panel { grid-template-columns: minmax(0, 1fr); }
+.panel-head { flex-wrap: wrap; row-gap: 8px; }
+.panel-head .who { flex: 1 1 auto; min-width: 0; }
+.panel-head h3 { overflow-wrap: anywhere; }
+/* Chart follows the skin's type and line style */
+.chart svg text { font-family: var(--mono); }
+:root[data-skin="studio"] .chart svg line { stroke: #eaecf0; stroke-opacity: 1; stroke-dasharray: none; stroke-width: 1; }
+:root[data-skin="studio"] .chart svg text { fill: #5d6b82; font-weight: 500; }
+:root[data-skin="quest"] .chart svg line { stroke: #3b2a17; stroke-opacity: .35; stroke-dasharray: 4 4; stroke-width: 2; }
+:root[data-skin="quest"] .chart svg line:first-of-type { stroke-opacity: 1; stroke-dasharray: none; stroke-width: 3; }
+:root[data-skin="quest"] .chart svg text { fill: #2b1d0e; font-weight: 700; font-family: "JetBrains Mono", ui-monospace, monospace; }
+:root[data-skin="quest"] .legend { font-weight: 700; }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <svg width="58" height="58" viewBox="0 0 58 58" aria-hidden="true">
+        <path d="M29 4l6.2 14.6L51 20.4l-12 10.5 3.6 15.6L29 38.4l-13.6 8.1L19 30.9 7 20.4l15.8-1.8z" fill="var(--sun)" stroke="var(--ink)" stroke-width="2.5" stroke-linejoin="round"/>
+        <circle cx="24.5" cy="25.5" r="2.2" fill="var(--ink)"/><circle cx="33.5" cy="25.5" r="2.2" fill="var(--ink)"/>
+        <path d="M26 30.5q3 2.6 6 0" fill="none" stroke="var(--ink)" stroke-width="2" stroke-linecap="round"/>
+        <ellipse cx="20.5" cy="30" rx="2.6" ry="1.6" fill="var(--blush)"/><ellipse cx="37.5" cy="30" rx="2.6" ry="1.6" fill="var(--blush)"/>
+      </svg>
+      <div>
+        <div class="kicker">Claude · Kimi · Gemini · OpenRouter</div>
+        <h1>Model Usage</h1>
+      </div>
+    </div>
+    <div class="stamp-row">
+      <div class="stamp" id="stamp" aria-live="polite"></div>
+      <label class="skin-pick" for="skin"><span class="sr">Style</span>
+        <select id="skin">
+          <option value="kawaii">Kawaii</option>
+          <option value="quest">Pixel Quest</option>
+          <option value="studio">Studio</option>
+        </select>
+      </label>
+    </div>
+  </header>
+
+  <section class="hero sticker" id="hero" aria-label="Claude this week"></section>
+
+  <section>
+    <div class="sec-head"><h2>Limits</h2><span class="hint">How much of each plan window is used</span></div>
+    <div class="limits" id="limits"></div>
+  </section>
+
+  <section id="cm-section">
+    <div class="sec-head"><h2>Claude by model</h2><span class="hint" id="cm-hint">Share of Claude's output this week</span></div>
+    <div class="cm sticker" id="cm"></div>
+  </section>
+
+  <section>
+    <div class="sec-head"><h2>Models</h2><span class="hint">Success = call returned an answer · Useful = draft kept as-is or after fixes</span></div>
+    <div class="savings sticker" id="savings"></div>
+    <div class="table-scroll sticker" id="models"></div>
+  </section>
+
+  <section>
+    <div class="sec-head"><h2>Last 14 days</h2><span class="hint">Delegated calls per day</span></div>
+    <div class="chart sticker" id="chart"></div>
+  </section>
+
+  <section>
+    <div class="sec-head"><h2>Recent calls</h2></div>
+    <div class="recent sticker" id="recent"></div>
+  </section>
+
+  <section>
+    <div class="sec-head"><h2>Rating drafts</h2></div>
+    <div class="how sticker">
+      <div>After Claude reviews a Kimi, Gemini or OpenRouter draft, it records what happened to it: <code>used</code> (kept as-is), <code>fixed</code> (kept after edits) or <code>discarded</code>. You can ask for it too, e.g. “rate the last gem call discarded”.</div>
+      <div>To update this page, say <code>usage</code> in Claude Code. It also refreshes itself once a day at 09:00 while the Claude app is open.</div>
+    </div>
+  </section>
+</div>
+
+<script>
+const DATA = {"generated_at":"2026-10-19T15:01:13.159315+00:00","limits":{"claude":{"status":"ok","plan":"Team","windows":[{"label":"5-hour limit","percentUsed":25,"resetsAt":"2026-10-19T16:39:59.747Z"},{"label":"Weekly \u00b7 all models","percentUsed":67,"resetsAt":"2026-10-24T09:59:59.747Z"},{"label":"Weekly \u00b7 Fable","percentUsed":0,"resetsAt":"2026-10-24T10:00:00.000Z"}],"extraUsage":{"enabled":false,"currency":"USD"}},"kimi":{"status":"ok","windows":[{"label":"5-hour limit","percentUsed":40,"resetsAt":"2026-10-19T17:17:46Z"},{"label":"Weekly","percentUsed":12,"resetsAt":"2026-10-24T20:17:46Z"}]},"gemini":{"status":"no_api","note":"Google has no usage API for AI Studio keys; counts below come from the local log","accounts":[{"account":"1","calls_today":3,"failed_today":1,"tier":"paid"},{"account":"2","calls_today":1,"failed_today":0,"tier":"free"}]},"openrouter":{"status":"ok","free_tier":false,"daily_cap":1000,"calls_today":2,"failed_today":0,"windows":[{"label":"Free requests today","percentUsed":0,"resetsAt":"2026-10-20T00:00:00+00:00"}],"credits_used":0}},"models":[{"provider":"kimi","model":"kimi-for-coding","account":"1","calls_total":6,"calls_7d":6,"calls_30d":6,"ok":5,"failed":1,"success_rate":0.8333333333333334,"tokens_in":47342,"tokens_out":25222,"avg_ms":124084,"verdicts":{"used":3,"fixed":1,"discarded":0,"unrated":2},"usefulness":1.0,"used_as_is":0.75,"last_used":"2026-10-19T14:56:54+00:00","net_saved":17500,"net_counted":4},{"provider":"gemini","model":"default","account":"1","calls_total":3,"calls_7d":3,"calls_30d":3,"ok":2,"failed":1,"success_rate":0.6666666666666666,"tokens_in":15979,"tokens_out":1543,"avg_ms":140969,"verdicts":{"used":2,"fixed":0,"discarded":0,"unrated":1},"usefulness":1.0,"used_as_is":1.0,"last_used":"2026-10-19T13:57:33+00:00","net_saved":370,"net_counted":3},{"provider":"gemini","model":"gemini-3.8-flash","account":"2","calls_total":1,"calls_7d":1,"calls_30d":1,"ok":1,"failed":0,"success_rate":1.0,"tokens_in":9869,"tokens_out":1,"avg_ms":4896,"verdicts":{"used":0,"fixed":0,"discarded":0,"unrated":1},"usefulness":null,"used_as_is":null,"last_used":"2026-10-19T11:21:13+00:00","net_saved":null,"net_counted":0},{"provider":"openrouter","model":"poolside/laguna-s-2.1:free","account":"1","calls_total":1,"calls_7d":1,"calls_30d":1,"ok":1,"failed":0,"success_rate":1.0,"tokens_in":2901,"tokens_out":1385,"avg_ms":42593,"verdicts":{"used":0,"fixed":1,"discarded":0,"unrated":0},"usefulness":1.0,"used_as_is":0.0,"last_used":"2026-10-19T13:03:19+00:00","net_saved":-49,"net_counted":1},{"provider":"openrouter","model":"thinkingmachines/inkling:free","account":"1","calls_total":1,"calls_7d":1,"calls_30d":1,"ok":1,"failed":0,"success_rate":1.0,"tokens_in":2032,"tokens_out":28,"avg_ms":1508,"verdicts":{"used":0,"fixed":0,"discarded":0,"unrated":1},"usefulness":null,"used_as_is":null,"last_used":"2026-10-19T11:27:47+00:00","net_saved":null,"net_counted":0}],"claude_models":{"since":"2026-10-17T09:59:59.747000+00:00","models":[{"model":"claude-opus-5-5","messages":9639,"input":19398,"output":6385835,"cache_read":1848666785,"cache_write":32196592,"share":0.9440299649298441},{"model":"claude-sonnet-5-5","messages":775,"input":1550,"output":378517,"cache_read":116848979,"cache_write":2920946,"share":0.055956878033232904},{"model":"claude-haiku-5-5","messages":13,"input":26,"output":89,"cache_read":539493,"cache_write":114308,"share":1.315703692293273e-05}]},"daily":[{"date":"2026-10-06","kimi":0,"gemini":0,"openrouter":0,"claude":0},{"date":"2026-10-07","kimi":0,"gemini":0,"openrouter":0,"claude":0},{"date":"2026-10-08","kimi":0,"gemini":0,"openrouter":0,"claude":0},{"date":"2026-10-09","kimi":0,"gemini":0,"openrouter":0,"claude":0},{"date":"2026-10-10","kimi":0,"gemini":0,"openrouter":0,"claude":0},{"date":"2026-10-11","kimi":0,"gemini":0,"openrouter":0,"claude":0},{"date":"2026-10-12","kimi":0,"gemini":0,"openrouter":0,"claude":0},{"date":"2026-10-13","kimi":0,"gemini":0,"openrouter":0,"claude":0},{"date":"2026-10-14","kimi":0,"gemini":0,"openrouter":0,"claude":0},{"date":"2026-10-15","kimi":0,"gemini":0,"openrouter":0,"claude":0},{"date":"2026-10-16","kimi":0,"gemini":0,"openrouter":0,"claude":0},{"date":"2026-10-17","kimi":0,"gemini":0,"openrouter":0,"claude":0},{"date":"2026-10-18","kimi":0,"gemini":0,"openrouter":0,"claude":0},{"date":"2026-10-19","kimi":6,"gemini":4,"openrouter":2,"claude":0}],"recent":[{"id":"k-20261019T145654-10ab","ts":"2026-10-19T14:56:54+00:00","provider":"kimi","model":"kimi-for-coding","account":"1","mode":"text","ok":true,"ms":66830,"in":5668,"out":2432,"verdict":"fixed","note":null,"tag":"summary","net_saved":996},{"id":"k-20261019T145638-c247","ts":"2026-10-19T14:56:38+00:00","provider":"kimi","model":"kimi-for-coding","account":"1","mode":"agent","ok":true,"ms":254139,"in":38144,"out":16338,"verdict":"used","note":null,"tag":"review","net_saved":12758},{"id":"k-20261019T140339-aa66","ts":"2026-10-19T14:03:39+00:00","provider":"kimi","model":"kimi-for-coding","account":"1","mode":"text","ok":false,"ms":280000,"in":null,"out":null,"verdict":null,"note":null,"tag":null,"net_saved":-318},{"id":"g-20261019T135733-72a0","ts":"2026-10-19T13:57:33+00:00","provider":"gemini","model":"default","account":"1","mode":"text","ok":false,"ms":280000,"in":null,"out":null,"verdict":null,"note":null,"tag":null,"net_saved":-318},{"id":"o-20261019T130319-0dbd","ts":"2026-10-19T13:03:19+00:00","provider":"openrouter","model":"poolside/laguna-s-2.1:free","account":"1","mode":"text","ok":true,"ms":42593,"in":2901,"out":1385,"verdict":"fixed","note":null,"tag":"code","net_saved":-49},{"id":"g-20261019T115129-13c6","ts":"2026-10-19T11:51:29+00:00","provider":"gemini","model":"default","account":"1","mode":"text","ok":true,"ms":129629,"in":8254,"out":1443,"verdict":"used","note":null,"tag":"design","net_saved":640},{"id":"g-20261019T114041-a1e4","ts":"2026-10-19T11:40:41+00:00","provider":"gemini","model":"default","account":"1","mode":"text","ok":true,"ms":13280,"in":7725,"out":100,"verdict":"used","note":null,"tag":"code","net_saved":48},{"id":"o-20261019T112747-d081","ts":"2026-10-19T11:27:47+00:00","provider":"openrouter","model":"thinkingmachines/inkling:free","account":"1","mode":"text","ok":true,"ms":1508,"in":2032,"out":28,"verdict":null,"note":null,"tag":null,"net_saved":null},{"id":"g-20261019T112113-fa5c","ts":"2026-10-19T11:21:13+00:00","provider":"gemini","model":"gemini-3.8-flash","account":"2","mode":"text","ok":true,"ms":4896,"in":9869,"out":1,"verdict":null,"note":null,"tag":null,"net_saved":null},{"id":"k-20261019T111820-24c9","ts":"2026-10-19T11:18:20+00:00","provider":"kimi","model":"kimi-for-coding","account":"1","mode":"text","ok":true,"ms":138131,"in":1474,"out":6388,"verdict":"used","note":null,"tag":"code","net_saved":4064},{"id":"k-20261019T111000-e305","ts":"2026-10-19T11:10:00+00:00","provider":"kimi","model":"kimi-for-coding","account":"1","mode":"text","ok":true,"ms":3452,"in":0,"out":38,"verdict":"used","note":null,"tag":null,"net_saved":null},{"id":null,"ts":"2026-10-19T11:07:32+00:00","provider":"kimi","model":"kimi-for-coding","account":"1","mode":"text","ok":true,"ms":1956,"in":2056,"out":26,"verdict":null,"note":null,"tag":null,"net_saved":null}],"savings":{"since":"2026-10-17T09:59:59.747000+00:00","net":17821,"counted":8,"uncounted":4,"by_provider":[{"key":"kimi","net":17500,"calls":4},{"key":"gemini","net":370,"calls":3},{"key":"openrouter","net":-49,"calls":1}],"by_tag":[{"key":"review","net":12758,"calls":1},{"key":"code","net":4063,"calls":3},{"key":"summary","net":996,"calls":1},{"key":"design","net":640,"calls":1},{"key":"untagged","net":-636,"calls":2}]},"public":true};
+const PROVIDERS = { claude: "Claude", kimi: "Kimi", gemini: "Gemini", openrouter: "OpenRouter" };
+const $ = (id) => document.getElementById(id);
+const pkey = (p) => (Object.hasOwn(PROVIDERS, p) ? p : "other");
+const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const pct = (x) => (x == null ? "—" : Math.round(x * 100) + "%");
+const fmtNum = (n) => (n == null ? "—" : n >= 1e6 ? (n / 1e6).toFixed(1) + "M" : n >= 1e3 ? (n / 1e3).toFixed(1) + "k" : String(n));
+const fmtMs = (ms) => (ms == null ? "—" : ms < 1000 ? ms + " ms" : (ms / 1000).toFixed(1) + " s");
+
+function relTime(iso, future) {
+  if (!iso) return "";
+  const diff = (new Date(iso) - Date.now()) / 1000 * (future ? 1 : -1);
+  if (isNaN(diff)) return "";
+  if (diff <= 0) return future ? "now" : "just now";
+  const m = Math.round(diff / 60), h = Math.floor(m / 60), d = Math.floor(h / 24);
+  const s = d >= 1 ? `${d}d ${h % 24}h` : h >= 1 ? `${h}h ${m % 60}m` : `${m}m`;
+  return future ? `in ${s}` : `${s} ago`;
+}
+const shortDate = (iso) => { const d = new Date(iso); return isNaN(d) ? String(iso ?? "") : d.toLocaleString(undefined, { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" }); };
+
+// Mascot face stays friendly: happy (<70%), calm (70%+ or recent failures), sleepy (no data).
+const MOODS = { happy: "Plenty left", calm: "Past the halfway mark", sleepy: "No live data" };
+function moodFor(percents, failed) {
+  if (!percents.length && failed == null) return "sleepy";
+  const top = Math.max(0, ...percents);
+  return top >= 70 || failed >= 1 ? "calm" : "happy";
+}
+// Provider bodies designed by Gemini (paid account, 2026-10-19); faces are shared and drawn on top.
+const BODIES = { claude: { faceX: 24, faceY: 24, svg: ` <path d="M 24 6 A 7 7 0 0 1 35 13 A 7 7 0 0 1 42 24 A 7 7 0 0 1 35 35 A 7 7 0 0 1 24 42 A 7 7 0 0 1 13 35 A 7 7 0 0 1 6 24 A 7 7 0 0 1 13 13 A 7 7 0 0 1 24 6 Z" fill="var(--p-claude)" stroke="var(--ink)" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round" /> ` }, kimi: { faceX: 17, faceY: 24, svg: ` <path d="M 34 10 A 18 18 0 1 0 34 38 A 24 24 0 0 1 34 10 Z" fill="var(--p-kimi)" stroke="var(--ink)" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round" /> <path d="M 40 18 Q 40 24 44 24 Q 40 24 40 30 Q 40 24 36 24 Q 40 24 40 18 Z" fill="var(--sun)" stroke="var(--ink)" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round" /> ` }, gemini: { faceX: 30, faceY: 28, svg: ` <path d="M 14 4 C 17 4 19 7 20 9 C 22 11 25 12 25 16 C 25 20 22 22 20 24 C 19 26 17 29 14 29 C 11 29 9 26 8 24 C 6 22 3 20 3 16 C 3 12 6 11 8 9 C 9 7 11 4 14 4 Z" fill="var(--p-gemini)" stroke="var(--ink)" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round" /> <path d="M 30 12 C 34 12 36 16 38 18 C 40 20 44 22 44 28 C 44 34 40 36 38 38 C 36 40 34 44 30 44 C 26 44 24 40 22 38 C 20 36 16 34 16 28 C 16 22 20 20 22 18 C 24 16 26 12 30 12 Z" fill="var(--p-gemini)" stroke="var(--ink)" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round" /> ` }, openrouter: { faceX: 24, faceY: 29, svg: ` <path d="M 14 36 L 14 41 A 2.5 2.5 0 0 0 19 41 L 19 36 Z" fill="var(--p-openrouter)" stroke="var(--ink)" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round" /> <path d="M 29 36 L 29 41 A 2.5 2.5 0 0 0 34 41 L 34 36 Z" fill="var(--p-openrouter)" stroke="var(--ink)" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round" /> <path d="M 14 20 L 10 12" stroke="var(--ink)" stroke-width="2.4" stroke-linecap="round" /> <path d="M 34 20 L 38 12" stroke="var(--ink)" stroke-width="2.4" stroke-linecap="round" /> <rect x="7" y="18" width="34" height="22" rx="6" fill="var(--p-openrouter)" stroke="var(--ink)" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round" /> <circle cx="10" cy="12" r="3" fill="var(--sun)" stroke="var(--ink)" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round" /> <circle cx="38" cy="12" r="3" fill="var(--sun)" stroke="var(--ink)" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round" /> <path d="M 21 13 A 4 4 0 0 1 27 13" fill="none" stroke="var(--ink)" stroke-width="2.4" stroke-linecap="round" /> <path d="M 17 9 A 8 8 0 0 1 31 9" fill="none" stroke="var(--ink)" stroke-width="2.4" stroke-linecap="round" /> ` }
+};
+const FACE_SCALE = { kimi: 0.8, gemini: 0.9 };
+const SKINS = ["kawaii", "quest", "studio"];
+let SKIN = "kawaii";
+try { const saved = localStorage.getItem("mu-skin"); if (SKINS.includes(saved)) SKIN = saved; } catch (e) {}
+document.documentElement.dataset.skin = SKIN;
+// 16x16 Pixel Quest fairy elves (0 outline, 1 shade, 2 hair, 3 accent, 4 skin, 5 wing, 6 blush), drawn by Claude.
+const SPRITES = {"claude":["....3..3..3.....","...0000000000...","..022222222220..","..021222222120..","..022444444220..","0.024444444420.0","0444404444044440",".00440444404400.","..046444444640..","00.0444004440.00","050.00444400.050","0550022222200550","050.02122120.050","00..02222220..00","....02200220....","....000..000...."],"kimi":["...........33...","...0000000003...","..022222222220..","..021222222120..","..022444444220..","0.024444444420.0","0444404444044440",".00440444404400.","..046444444640..","00.0444004440.00","050.00444400.050","0550022222200550","050.02122120.050","00..02222220..00","....02200220....","....000..000...."],"gemini":["..00........00..",".02200000000220.","..022222222220..","..021222222120..","..022444444220..","0.024444444420.0","0444404444044440",".00440444404400.","..046444444640..","00.0444004440.00","050.00444400.050","0550022222200550","050.02122120.050","00..02222220..00","....02200220....","....000..000...."],"openrouter":[".......010......","...0000000000...","..022222222220..","..021222222120..","..022444444220..","0.024444444420.0","0444404444044440",".00440444404400.","..046444444640..","00.0444004440.00","050.00444400.050","0550022222200550","050.02122120.050","00..02222220..00","....02200220....","....000..000...."]};
+const QUEST_PAL = {
+  claude: ["#3b2a17", "#a8501f", "#e07b39", "#fff6dc", "#f6d2b0", "#fde7c2", "#e8908a"],
+  kimi: ["#3b2a17", "#4d72a6", "#7fa7d9", "#fff6dc", "#f6d2b0", "#dbe9ff", "#e8908a"],
+  gemini: ["#3b2a17", "#6f55a3", "#a98bd6", "#fff6dc", "#f6d2b0", "#ecdcff", "#e8908a"],
+  openrouter: ["#3b2a17", "#3e7a33", "#6fbf5a", "#fff6dc", "#f6d2b0", "#dff5d0", "#e8908a"],
+};
+function sprite(provider, mood) {
+  const rows = SPRITES[provider];
+  if (!rows) return mascotKawaii(provider, mood);
+  let rects = "";
+  rows.forEach((row, y) => [...row].forEach((ch, x) => { if (ch >= "0" && ch <= "6") rects += `<rect x="${x}" y="${y}" width="1" height="1" fill="${(QUEST_PAL[provider] || QUEST_PAL.claude)[+ch]}"/>`; }));
+  return `<svg class="sprite mascot-${provider}" width="48" height="48" viewBox="0 0 16 16" shape-rendering="crispEdges" role="img" aria-label="${esc(PROVIDERS[provider])} elf">${rects}</svg>`;
+}
+function avatar(provider) {
+  return `<svg class="avatar" width="48" height="48" viewBox="0 0 48 48" role="img" aria-label="${esc(PROVIDERS[provider])}">
+    <rect x="2" y="2" width="44" height="44" rx="12" fill="var(--p-${provider})"/>
+    <text x="24" y="31" text-anchor="middle" font-family="Instrument Sans, system-ui, sans-serif" font-size="20" font-weight="600" fill="#101828">${esc(PROVIDERS[provider][0])}</text>
+  </svg>`;
+}
+function mascot(provider, mood) {
+  return SKIN === "quest" ? sprite(provider, mood) : SKIN === "studio" ? avatar(provider) : mascotKawaii(provider, mood);
+}
+function mascotKawaii(provider, mood) {
+  const eyes = {
+    happy: `<path d="M15 22q3-4 6 0M27 22q3-4 6 0" fill="none" stroke="var(--ink)" stroke-width="2.4" stroke-linecap="round"/>`,
+    calm: `<circle cx="18" cy="22" r="2.4" fill="var(--ink)"/><circle cx="30" cy="22" r="2.4" fill="var(--ink)"/>`,
+    sleepy: `<path d="M15 22.5h6M27 22.5h6" stroke="var(--ink)" stroke-width="2.4" stroke-linecap="round"/>`,
+  }[mood];
+  const mouth = {
+    happy: `<path d="M20 28q4 4.5 8 0" fill="var(--bad-fill)" stroke="var(--ink)" stroke-width="2.2" stroke-linejoin="round"/>`,
+    calm: `<path d="M21 29q3 2.4 6 0" fill="none" stroke="var(--ink)" stroke-width="2.2" stroke-linecap="round"/>`,
+    sleepy: `<path d="M21 29.5h6" stroke="var(--ink)" stroke-width="2.2" stroke-linecap="round"/>`,
+  }[mood];
+  return `<svg class="mascot mascot-${provider} ${mood}" width="48" height="48" viewBox="0 0 48 48" role="img" aria-label="${esc(PROVIDERS[provider])} mascot, ${MOODS[mood].toLowerCase()}">
+    <g class="body">${(BODIES[provider] || BODIES.claude).svg}</g>
+    <g class="face-pos" transform="translate(${(BODIES[provider] || BODIES.claude).faceX} ${(BODIES[provider] || BODIES.claude).faceY}) scale(${FACE_SCALE[provider] || 1}) translate(-24 -25)">
+      <g class="eyes">${eyes}</g>
+      <ellipse cx="13" cy="27.5" rx="3" ry="1.8" fill="var(--blush)"/><ellipse cx="35" cy="27.5" rx="3" ry="1.8" fill="var(--blush)"/>
+      ${mouth}
+    </g>
+  </svg>`;
+}
+function panel(provider, chip, mood, inner) {
+  return `<div class="panel sticker">
+    <div class="panel-head">${mascot(provider, mood)}<div class="who"><h3>${PROVIDERS[provider]}</h3><span class="mood">${MOODS[mood]}</span></div><span class="chip">${esc(chip)}</span></div>
+    ${inner}</div>`;
+}
+
+function renderHero(L) {
+  const c = L.claude || {};
+  const wk = (c.windows || []).find((w) => /weekly/i.test(w.label) && /all/i.test(w.label)) || (c.windows || []).find((w) => /weekly/i.test(w.label));
+  if (c.status !== "ok" || !wk) { $("hero").hidden = true; return; }
+  const used = Math.max(0, Math.min(100, wk.percentUsed ?? 0));
+  const resetMs = new Date(wk.resetsAt).getTime();
+  if (!Number.isFinite(resetMs)) { $("hero").hidden = true; return; }
+  $("hero").hidden = false;
+  const left = Math.max(0, (resetMs - Date.now()) / 864e5);
+  const elapsed = Math.max(0, Math.min(100, (1 - left / 7) * 100));
+  const ahead = used - elapsed;
+  const tone = ahead > 5 ? "ahead" : "good";
+  const mood = tone === "good" ? "happy" : "calm";
+  const verdict = tone === "good" ? "On pace for the week." : "A little ahead of the week. A good time to hand more drafting to Kimi, Gemini and OpenRouter.";
+  const perDay = left > 0.5 ? Math.max(0, (100 - used) / left) : null;
+  const resetDay = new Date(wk.resetsAt).toLocaleDateString(undefined, { weekday: "long" });
+  $("hero").innerHTML = `
+    <div class="hero-face">${mascot("claude", mood).replace('width="48" height="48"', 'width="72" height="72"')}</div>
+    <div class="hero-big">
+      <span class="eyebrow">Claude this week</span>
+      <span class="figure num">${used}%<small>used</small></span>
+      <span class="line">Resets <b>${esc(resetDay)}</b> (${esc(relTime(wk.resetsAt, true))})${perDay != null ? ` · about <b>${Math.round(perDay)}%</b> a day left to spend` : ""}</span>
+    </div>
+    <div class="pace">
+      <div class="pace-track" role="img" aria-label="${used}% used, ${Math.round(elapsed)}% of the week gone">
+        <span class="used${tone === "good" ? "" : " warn"}" style="width:${used}%"></span>
+        <span class="now" style="left:${elapsed}%"></span>
+      </div>
+      <div class="pace-legend"><span>${used}% used</span><span>${Math.round(elapsed)}% of week gone</span></div>
+      <span class="pace-verdict ${tone}">${esc(verdict)}</span>
+    </div>`;
+}
+
+function renderClaudeModels(cm) {
+  if (!cm || !(cm.models || []).length) { $("cm-section").hidden = true; return; }
+  const pretty = (id) => { const m = /claude-([a-z]+)-(\d+)-(\d+)/.exec(id); return m ? `${m[1][0].toUpperCase()}${m[1].slice(1)} ${m[2]}.${m[3]}` : id; };
+  const family = (id) => (/opus|sonnet|haiku|fable/.exec(id) || ["other"])[0];
+  const since = new Date(cm.since).toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short" });
+  $("cm-hint").textContent = `Share of Claude's output since ${since}`;
+  const rows = cm.models;
+  $("cm").innerHTML = `
+    <div class="cm-bar" role="img" aria-label="${rows.map((r) => `${esc(pretty(r.model))} ${Math.round(r.share * 100)}%`).join(", ")}">
+      ${rows.filter((r) => r.share >= 0.005).map((r) => `<i style="width:${r.share * 100}%;background:var(--m-${family(r.model)})" title="${esc(pretty(r.model))}: ${Math.round(r.share * 100)}%"></i>`).join("")}
+    </div>
+    <div class="cm-rows">
+      <div class="cm-row head"><span>Model</span><span class="r">Share</span><span class="r">Replies</span><span class="r">Output</span><span class="r">Input + cache</span></div>
+      ${rows.map((r) => `<div class="cm-row">
+        <span class="name"><span class="dot" style="background:var(--m-${family(r.model)})"></span>${esc(pretty(r.model))}</span>
+        <span class="r share num">${r.share >= 0.005 ? Math.round(r.share * 100) + "%" : "<1%"}</span>
+        <span class="r num">${fmtNum(r.messages)}</span>
+        <span class="r num">${fmtNum(r.output)}</span>
+        <span class="r num">${fmtNum(r.input + r.cache_read + r.cache_write)}</span>
+      </div>`).join("")}
+    </div>
+    <p class="note">From Claude Code sessions on this Mac, including subagents. Chats on claude.ai and other devices aren't included.</p>`;
+}
+
+function meter(w) {
+  const p = Math.max(0, Math.min(100, w.percentUsed ?? 0));
+  const cls = (p >= 85 ? "warn" : "") + (p === 0 ? " zero" : "");
+  const reset = w.resetsAt ? `Resets ${relTime(w.resetsAt, true)}` : "";
+  return `<div class="meter">
+    <div class="meter-top"><span>${esc(w.label)}</span><span class="pct num">${p}%</span></div>
+    <div class="bar" role="meter" aria-valuenow="${p}" aria-valuemin="0" aria-valuemax="100" aria-label="${esc(w.label)}"><i class="${cls}" style="width:${p}%"></i></div>
+    ${reset ? `<div class="meter-foot">${reset}</div>` : ""}
+  </div>`;
+}
+
+function renderLimits(L) {
+  const c = L.claude || {}, k = L.kimi || {}, g = L.gemini || {}, o = L.openrouter || {};
+  const pcts = (x) => (x.status === "ok" ? (x.windows || []).map((w) => w.percentUsed ?? 0) : []);
+  const claude = c.status === "ok"
+    ? (c.windows || []).map(meter).join("") + (c.extraUsage && !c.extraUsage.enabled ? `<p class="note">Extra usage is off.</p>` : "")
+    : `<p class="note">Plan limits could not be read for this snapshot.</p>`;
+  const kimi = k.status === "ok" ? (k.windows || []).map(meter).join("") : `<p class="note">${esc(k.note || "Kimi quota could not be read.")}</p>`;
+  const accts = (g.accounts || []).map((a) =>
+    `<div class="acct"><span>Account ${esc(a.account)} · ${a.tier === "paid" ? "paid" : "free"}</span><span class="num">${a.calls_today} today${a.failed_today ? ` · ${a.failed_today} failed` : ""}</span></div>`).join("");
+  const gFailed = (g.accounts || []).reduce((s, a) => s + (a.failed_today || 0), 0);
+  const orInner = o.status === "ok"
+    ? (o.windows || []).map(meter).join("") + `<div class="acct"><span>Calls today</span><span class="num">${o.calls_today} of ${o.daily_cap}${o.failed_today ? ` · ${o.failed_today} failed` : ""}</span></div>`
+    : `<p class="note">${esc(o.note || "OpenRouter status could not be read.")}</p>`;
+  $("limits").innerHTML =
+    panel("claude", c.plan || "Plan", moodFor(pcts(c)), claude) +
+    panel("kimi", "kimi-for-coding", moodFor(pcts(k)), kimi) +
+    panel("gemini", (() => { const t = new Set((g.accounts || []).map((a) => a.tier)); return t.size > 1 ? "Paid + free" : t.has("paid") ? "Paid" : "Free tier"; })(), moodFor([], gFailed), accts +
+      `<p class="note">Google has no quota API for AI Studio keys, so these counts come from Claude's own log. Free-tier quotas reset at midnight Pacific.</p>`) +
+    panel("openrouter", o.status === "ok" ? (o.free_tier ? "Free tier" : "Credits") : "Free models", moodFor(pcts(o), o.status === "ok" ? o.failed_today : null), orInner +
+      `<p class="note">Counts come from Claude's own log. The free daily cap resets at 00:00 UTC.</p>`);
+}
+
+const signed = (n) => (n == null ? "—" : (n > 0 ? "+" : n < 0 ? "−" : "") + fmtNum(Math.abs(n)));
+const signCls = (n) => (n > 0 ? "pos" : n < 0 ? "neg" : "");
+
+function renderSavings(sv) {
+  if (!sv) { $("savings").hidden = true; return; }
+  const since = new Date(sv.since).toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short" });
+  const chip = (x, cls) => `<span class="sav-chip ${cls || ""}">${esc(PROVIDERS[x.key] || x.key)} <span class="num ${signCls(x.net)}">${signed(x.net)}</span></span>`;
+  $("savings").innerHTML = `
+    <div class="sav-big">
+      <span class="eyebrow">Delegation this week</span>
+      <span class="figure num ${signCls(sv.net)}">${signed(sv.net)}</span>
+      <span class="line">Claude output tokens saved since ${esc(since)} · ${sv.counted} call${sv.counted === 1 ? "" : "s"} counted</span>
+    </div>
+    <div class="sav-chips">
+      ${sv.by_provider.map((x) => chip(x)).join("")}
+      ${sv.by_tag.filter((x) => x.key !== "untagged").map((x) => chip(x, "tag")).join("")}
+    </div>
+    <p class="sav-note">Estimate: the worker's output, minus the brief Claude wrote, minus reading the answer back (about 1/5 the cost of writing), minus fixes (none if used, 30% if fixed, all of it if discarded).${sv.uncounted ? ` ${sv.uncounted} call${sv.uncounted === 1 ? " isn't" : "s aren't"} counted yet (unrated, or logged before brief sizes were tracked).` : ""}</p>`;
+}
+
+function renderModels(rows) {
+  if (!rows.length) { $("models").innerHTML = `<div class="empty">No delegated calls logged yet. Ask Kimi, Gemini or OpenRouter for something and it shows up here.</div>`; return; }
+  const sr = (x) => x == null ? "none" : x >= 0.95 ? "good" : x >= 0.8 ? "warn" : "bad";
+  const body = rows.map((r) => {
+    const v = r.verdicts || {}, rated = (v.used || 0) + (v.fixed || 0) + (v.discarded || 0);
+    const w = (n) => rated ? (n / rated * 100) : 0;
+    const split = rated
+      ? `<div class="split" title="${v.used} used · ${v.fixed} fixed · ${v.discarded} discarded"><i class="u" style="width:${w(v.used)}%"></i><i class="f" style="width:${w(v.fixed)}%"></i><i class="d" style="width:${w(v.discarded)}%"></i></div><span class="num">${pct(r.usefulness)}</span>`
+      : `<span class="pill none">unrated</span>`;
+    return `<tr>
+      <td><span class="dot" style="background:var(--p-${pkey(r.provider)}, var(--paper-2))"></span><span class="model">${esc(PROVIDERS[r.provider] || r.provider)}</span><span class="sub">${esc(r.model)}${r.account !== "1" ? ` · acct ${esc(r.account)}` : ""}</span></td>
+      <td class="r num">${r.calls_30d}</td>
+      <td class="r num">${r.calls_total}</td>
+      <td><span class="pill num ${sr(r.success_rate)}">${pct(r.success_rate)}</span>${r.failed ? `<span class="sub">${r.failed} failed</span>` : ""}</td>
+      <td><div class="split-cell">${split}</div></td>
+      <td class="r num">${rated}/${r.calls_total}</td>
+      <td class="r num"><span class="${signCls(r.net_saved)}">${signed(r.net_saved)}</span></td>
+      <td class="r num">${fmtMs(r.avg_ms)}</td>
+      <td class="r num">${fmtNum(r.tokens_in)} / ${fmtNum(r.tokens_out)}</td>
+      <td>${esc(relTime(r.last_used, false))}</td>
+    </tr>`;
+  }).join("");
+  $("models").innerHTML = `<table>
+    <thead><tr><th>Model</th><th class="r">30 days</th><th class="r">All time</th><th>Success</th><th>Useful</th><th class="r">Rated</th><th class="r">Net saved</th><th class="r">Avg time</th><th class="r">Tokens in / out</th><th>Last used</th></tr></thead>
+    <tbody>${body}</tbody></table>`;
+}
+
+function renderChart(days) {
+  const keys = ["claude", "kimi", "gemini", "openrouter"].filter((k) => days.some((d) => d[k]));
+  if (!days.length || !keys.length) { $("chart").innerHTML = `<div class="empty">No activity in the last 14 days.</div>`; return; }
+  const W = 720, H = 210, padL = 34, padB = 28, padT = 12, innerW = W - padL - 8, innerH = H - padT - padB;
+  const max = Math.max(1, ...days.map((d) => keys.reduce((s, k) => s + (d[k] || 0), 0)));
+  const step = max <= 4 ? 1 : Math.ceil(max / 4);
+  const top = Math.ceil(max / step) * step;
+  const y = (v) => padT + innerH - (v / top) * innerH;
+  const bw = innerW / days.length, gap = SKIN === "studio" ? bw * 0.5 : Math.min(12, bw * 0.32);
+  let grid = "";
+  for (let v = 0; v <= top; v += step) grid += `<line x1="${padL}" x2="${W - 8}" y1="${y(v)}" y2="${y(v)}" stroke="var(--ink)" stroke-opacity="${v === 0 ? 1 : .18}" stroke-width="${v === 0 ? 2.5 : 1.5}" stroke-dasharray="${v === 0 ? "" : "4 5"}"/><text x="${padL - 9}" y="${y(v) + 4}" text-anchor="end" font-size="12" font-weight="700" fill="var(--ink-2)" font-family="var(--mono)">${v}</text>`;
+  let bars = "", labels = "";
+  days.forEach((d, i) => {
+    let acc = 0; const x = padL + i * bw + gap / 2, total = keys.reduce((s, k) => s + (d[k] || 0), 0);
+    keys.forEach((k, j) => { const v = d[k] || 0; if (!v) return;
+      const isTop = keys.slice(j + 1).every((kk) => !d[kk]);
+      const maxR = SKIN === "quest" ? 0 : SKIN === "studio" ? 3 : 7;
+      const h = y(acc) - y(acc + v), r = isTop ? Math.min(maxR, (bw - gap) / 2, h) : 0, x2 = x + bw - gap, yt = y(acc + v), yb = y(acc);
+      bars += `<path d="M${x} ${yb}V${yt + r}q0-${r} ${r}-${r}H${x2 - r}q${r} 0 ${r} ${r}V${yb}z" fill="var(--p-${k})" stroke="var(--ink)" stroke-width="2" stroke-linejoin="round"><title>${PROVIDERS[k]}: ${v} on ${d.date}</title></path>`;
+      acc += v; });
+    if (total) labels += `<text x="${x + (bw - gap) / 2}" y="${y(total) - 6}" text-anchor="middle" font-size="12" font-weight="700" fill="var(--ink)" font-family="var(--mono)">${total}</text>`;
+    if (i % 2 === days.length % 2 || i === days.length - 1) {
+      const dt = new Date(d.date + "T00:00:00Z");
+      labels += `<text x="${x + (bw - gap) / 2}" y="${H - 8}" text-anchor="middle" font-size="12" font-weight="700" fill="var(--ink-2)" font-family="var(--mono)">${dt.getUTCDate()}/${dt.getUTCMonth() + 1}</text>`;
+    }
+  });
+  $("chart").innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Delegated calls per day for the last 14 days">${grid}${bars}${labels}</svg>
+    <div class="legend">${keys.map((k) => `<span><span class="dot" style="background:var(--p-${k})"></span>${PROVIDERS[k]}</span>`).join("")}</div>`;
+}
+
+function renderRecent(rows) {
+  if (!rows.length) { $("recent").innerHTML = `<div class="empty">No calls yet.</div>`; return; }
+  $("recent").innerHTML = rows.map((r) => {
+    const v = !r.ok ? "failed" : r.verdict || "unrated";
+    const meta = [r.tag, r.mode, fmtMs(r.ms), r.in != null ? `${fmtNum(r.in)} in / ${fmtNum(r.out)} out` : null, r.net_saved != null ? `${signed(r.net_saved)} saved` : null].filter(Boolean).join(" · ");
+    return `<div class="row"><span class="when num">${esc(shortDate(r.ts))}</span>
+      <span class="what"><span class="dot" style="background:var(--p-${pkey(r.provider)}, var(--paper-2))"></span><b>${esc(PROVIDERS[r.provider] || r.provider)}</b> ${esc(r.model || "")}${r.account && r.account !== "1" ? ` · acct ${esc(r.account)}` : ""} · ${esc(meta)}${r.note ? ` · “${esc(r.note)}”` : ""}</span>
+      <span class="verdict ${v}">${v}</span></div>`;
+  }).join("");
+}
+
+function renderAll() {
+if (!DATA) {
+  $("stamp").textContent = "No snapshot yet. Say “usage” in Claude Code to fill this page.";
+  $("hero").hidden = true; $("cm-section").hidden = true; renderLimits({}); $("savings").hidden = true; renderModels([]); renderChart([]); renderRecent([]);
+} else {
+  const paintStamp = () => {
+    const ageH = (Date.now() - new Date(DATA.generated_at)) / 36e5;
+    const html = `Updated <b>${esc(relTime(DATA.generated_at, false))}</b>${ageH > 3 ? `<span class="stale">stale</span>` : ""}`;
+    if ($("stamp").innerHTML !== html) $("stamp").innerHTML = html;
+    $("stamp").title = `Snapshot ${shortDate(DATA.generated_at)}. Say "usage" in Claude Code for a new one.`;
+  };
+  paintStamp();
+  clearInterval(window.__stampTimer); window.__stampTimer = setInterval(paintStamp, 30000);
+  renderHero(DATA.limits || {});
+  renderClaudeModels(DATA.claude_models);
+  renderLimits(DATA.limits || {});
+  renderSavings(DATA.savings);
+  renderModels(DATA.models || []);
+  renderChart(DATA.daily || []);
+  renderRecent(DATA.recent || []);
+}
+}
+$("skin").value = SKIN;
+$("skin").addEventListener("change", (e) => {
+  SKIN = SKINS.includes(e.target.value) ? e.target.value : "kawaii";
+  document.documentElement.dataset.skin = SKIN;
+  try { localStorage.setItem("mu-skin", SKIN); } catch (err) {}
+  renderAll();
+});
+renderAll();
+</script>
+</body>
+</html>
