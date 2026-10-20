@@ -150,6 +150,37 @@ td .pos { color: var(--good); } td .neg { color: var(--ink-2); }
 .cm-row .name { color: var(--ink); font-family: var(--display); font-weight: 600; font-size: 15px; }
 .cm-row .r { text-align: right; }
 .cm-row .share { color: var(--ink); }
+
+/* How you use Claude */
+.ua-sum { padding: 18px 20px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr); gap: 18px 28px; }
+.ua-sum .mix { grid-column: 1 / -1; display: grid; gap: 10px; }
+.ua-ins { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; counter-reset: ins; align-content: start; }
+.ua-ins li { display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 10px; align-items: start; font-size: 14px; font-weight: 700; color: var(--ink-2); counter-increment: ins; }
+.ua-ins li::before { content: counter(ins); width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; background: var(--sun); border: 2px solid var(--ink); font: 700 12px var(--mono); color: var(--ink); }
+.ua-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 18px; }
+.ua-card { padding: 18px 20px; display: grid; gap: 12px; align-content: start; min-width: 0; }
+.ua-card h3 { margin: 0; font-family: var(--display); font-weight: 700; font-size: 18px; }
+.ua-row { grid-template-columns: minmax(0, 1.6fr) 52px 64px minmax(64px, .9fr); }
+.ua-row .name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ua-row .name .sub { margin-left: 4px; }
+.ua-row .r .sub { display: block; margin: 0; font-family: var(--body); }
+.ua-row .bar { height: 8px; margin-top: 6px; border-width: 1.5px; }
+.ua-row .bar > i { border-right: 0; }
+.ua-hours { display: grid; grid-template-columns: repeat(24, minmax(0, 1fr)); gap: 3px; align-items: end; height: 96px; }
+.ua-hours i { display: block; min-height: 2px; background: var(--p-claude); border: 2px solid var(--ink); border-radius: 6px 6px 2px 2px; }
+.ua-hours i.zero { border-width: 0 0 2px; border-radius: 0; background: none; }
+.ua-axis { display: grid; grid-template-columns: repeat(4, 1fr); font: 500 11px var(--mono); color: var(--ink-3); }
+.ua-days { display: flex; flex-wrap: wrap; gap: 6px; }
+@media (max-width: 640px) { .ua-sum { grid-template-columns: 1fr; } .ua-row { grid-template-columns: minmax(0, 1fr) 44px 60px; } .ua-row > :nth-child(3) { display: none; } }
+:root[data-skin="studio"] .ua-ins li::before { background: #f2f4f7; border: 1px solid #e4e7ec; color: var(--ink-2); }
+:root[data-skin="studio"] .ua-hours i { background: #0f766e; border: 0; border-radius: 2px; }
+:root[data-skin="studio"] .ua-hours i.zero { background: #eaecf0; }
+:root[data-skin="studio"] .ua-row .bar { height: 6px; }
+:root[data-skin="quest"] .ua-ins li::before { border-radius: 0; background: #e8c15a; border: 3px solid #3b2a17; color: #2b1d0e; }
+:root[data-skin="quest"] .ua-hours i { background: #5f9e4a; border: 3px solid #3b2a17; }
+:root[data-skin="quest"] .ua-row .bar { direction: ltr; background: #e6d6ae; height: 10px; }
+:root[data-skin="quest"] .ua-row .bar > i { background: #5f9e4a; }
+:root[data-skin="quest"] .ua-card h3 { color: #2b1d0e; }
 @media (max-width: 560px) {
   .cm-row { grid-template-columns: minmax(0, 1fr) 56px 90px; }
   .cm-row > :nth-child(4), .cm-row > :nth-child(5) { display: none; }
@@ -482,6 +513,11 @@ tbody tr:nth-child(even) td:first-child { background: #fffaea; }
     <div class="cm sticker" id="cm"></div>
   </section>
 
+  <section id="ua-section">
+    <div class="sec-head"><h2>How you use Claude</h2><span class="hint" id="ua-hint">Last 30 days of Claude Code on this Mac</span></div>
+    <div class="ua-sum sticker" id="ua-sum"></div>
+    <div class="ua-grid" id="ua-grid"></div>
+  </section>
   <section>
     <div class="sec-head"><h2>Models</h2><span class="hint">Success = call returned an answer · Useful = draft kept as-is or after fixes</span></div>
     <div class="savings sticker" id="savings"></div>
@@ -508,13 +544,13 @@ tbody tr:nth-child(even) td:first-child { background: #fffaea; }
 </div>
 
 <script>
-const DATA = {"generated_at":"2026-10-20T07:13:38.280426+00:00","limits":{"claude":{"status":"ok","plan":"Team","windows":[{"label":"5-hour limit","percentUsed":3,"resetsAt":"2026-10-20T11:19:59.602Z","resetsIn":"4h 6m"},{"label":"Weekly \u00b7 all models","percentUsed":69,"resetsAt":"2026-10-24T09:59:59.602Z","resetsIn":"4d 2h"},{"label":"Weekly \u00b7 Fable","percentUsed":0,"resetsAt":"2026-10-24T10:00:00.000Z","resetsIn":"4d 2h"}],"extraUsage":{"enabled":false,"currency":"USD"}},"kimi":{"status":"ok","windows":[{"label":"5-hour limit","percentUsed":0,"resetsAt":"2026-10-20T08:17:46Z"},{"label":"Weekly","percentUsed":16,"resetsAt":"2026-10-24T20:17:46Z"}]},"gemini":{"status":"no_api","note":"Google has no usage API for AI Studio keys; counts below come from the local log","accounts":[{"account":"1","calls_today":0,"failed_today":0,"tier":"paid"},{"account":"2","calls_today":0,"failed_today":0,"tier":"free"}]},"openrouter":{"status":"ok","free_tier":false,"daily_cap":1000,"calls_today":0,"failed_today":0,"windows":[{"label":"Free requests today","percentUsed":0,"resetsAt":"2026-10-21T00:00:00+00:00"}],"credits_used":0}},"models":[{"provider":"kimi","model":"kimi-for-coding","account":"1","calls_total":7,"calls_7d":7,"calls_30d":7,"ok":6,"failed":1,"success_rate":0.8571428571428571,"tokens_in":50351,"tokens_out":43790,"avg_ms":167761,"verdicts":{"used":3,"fixed":2,"discarded":0,"unrated":2},"usefulness":1.0,"used_as_is":0.6,"last_used":"2026-10-19T18:12:51+00:00","net_saved":25843,"net_counted":5},{"provider":"gemini","model":"default","account":"1","calls_total":3,"calls_7d":3,"calls_30d":3,"ok":2,"failed":1,"success_rate":0.6666666666666666,"tokens_in":15979,"tokens_out":1543,"avg_ms":140969,"verdicts":{"used":2,"fixed":0,"discarded":0,"unrated":1},"usefulness":1.0,"used_as_is":1.0,"last_used":"2026-10-19T13:57:33+00:00","net_saved":370,"net_counted":3},{"provider":"gemini","model":"gemini-3.8-flash","account":"2","calls_total":1,"calls_7d":1,"calls_30d":1,"ok":1,"failed":0,"success_rate":1.0,"tokens_in":9869,"tokens_out":1,"avg_ms":4896,"verdicts":{"used":0,"fixed":0,"discarded":0,"unrated":1},"usefulness":null,"used_as_is":null,"last_used":"2026-10-19T11:21:13+00:00","net_saved":null,"net_counted":0},{"provider":"openrouter","model":"poolside/laguna-s-2.1:free","account":"1","calls_total":1,"calls_7d":1,"calls_30d":1,"ok":1,"failed":0,"success_rate":1.0,"tokens_in":2901,"tokens_out":1385,"avg_ms":42593,"verdicts":{"used":0,"fixed":1,"discarded":0,"unrated":0},"usefulness":1.0,"used_as_is":0.0,"last_used":"2026-10-19T13:03:19+00:00","net_saved":-49,"net_counted":1},{"provider":"openrouter","model":"thinkingmachines/inkling:free","account":"1","calls_total":1,"calls_7d":1,"calls_30d":1,"ok":1,"failed":0,"success_rate":1.0,"tokens_in":2032,"tokens_out":28,"avg_ms":1508,"verdicts":{"used":0,"fixed":0,"discarded":0,"unrated":1},"usefulness":null,"used_as_is":null,"last_used":"2026-10-19T11:27:47+00:00","net_saved":null,"net_counted":0}],"claude_models":{"since":"2026-10-17T09:59:59.602000+00:00","models":[{"model":"claude-opus-5-5","messages":9692,"input":19504,"output":6417161,"cache_read":1857173732,"cache_write":32402569,"share":0.8952372674980524},{"model":"claude-sonnet-5-5","messages":1326,"input":2654,"output":750862,"cache_read":216767060,"cache_write":4720352,"share":0.10475031640130623},{"model":"claude-haiku-5-5","messages":13,"input":26,"output":89,"cache_read":539493,"cache_write":114308,"share":1.2416100641284622e-05}]},"daily":[{"date":"2026-10-07","kimi":0,"gemini":0,"openrouter":0,"claude":0},{"date":"2026-10-08","kimi":0,"gemini":0,"openrouter":0,"claude":0},{"date":"2026-10-09","kimi":0,"gemini":0,"openrouter":0,"claude":0},{"date":"2026-10-10","kimi":0,"gemini":0,"openrouter":0,"claude":0},{"date":"2026-10-11","kimi":0,"gemini":0,"openrouter":0,"claude":0},{"date":"2026-10-12","kimi":0,"gemini":0,"openrouter":0,"claude":0},{"date":"2026-10-13","kimi":0,"gemini":0,"openrouter":0,"claude":0},{"date":"2026-10-14","kimi":0,"gemini":0,"openrouter":0,"claude":0},{"date":"2026-10-15","kimi":0,"gemini":0,"openrouter":0,"claude":0},{"date":"2026-10-16","kimi":0,"gemini":0,"openrouter":0,"claude":0},{"date":"2026-10-17","kimi":0,"gemini":0,"openrouter":0,"claude":0},{"date":"2026-10-18","kimi":0,"gemini":0,"openrouter":0,"claude":0},{"date":"2026-10-19","kimi":7,"gemini":4,"openrouter":2,"claude":0},{"date":"2026-10-20","kimi":0,"gemini":0,"openrouter":0,"claude":0}],"recent":[{"id":"k-20261019T181251-931e","ts":"2026-10-19T18:12:51+00:00","provider":"kimi","model":"kimi-for-coding","account":"1","mode":"text","ok":true,"ms":429824,"in":3009,"out":18568,"verdict":"fixed","note":null,"tag":"draft","net_saved":8343},{"id":"k-20261019T145654-10ab","ts":"2026-10-19T14:56:54+00:00","provider":"kimi","model":"kimi-for-coding","account":"1","mode":"text","ok":true,"ms":66830,"in":5668,"out":2432,"verdict":"fixed","note":null,"tag":"summary","net_saved":996},{"id":"k-20261019T145638-c247","ts":"2026-10-19T14:56:38+00:00","provider":"kimi","model":"kimi-for-coding","account":"1","mode":"agent","ok":true,"ms":254139,"in":38144,"out":16338,"verdict":"used","note":null,"tag":"review","net_saved":12758},{"id":"k-20261019T140339-aa66","ts":"2026-10-19T14:03:39+00:00","provider":"kimi","model":"kimi-for-coding","account":"1","mode":"text","ok":false,"ms":280000,"in":null,"out":null,"verdict":null,"note":null,"tag":null,"net_saved":-318},{"id":"g-20261019T135733-72a0","ts":"2026-10-19T13:57:33+00:00","provider":"gemini","model":"default","account":"1","mode":"text","ok":false,"ms":280000,"in":null,"out":null,"verdict":null,"note":null,"tag":null,"net_saved":-318},{"id":"o-20261019T130319-0dbd","ts":"2026-10-19T13:03:19+00:00","provider":"openrouter","model":"poolside/laguna-s-2.1:free","account":"1","mode":"text","ok":true,"ms":42593,"in":2901,"out":1385,"verdict":"fixed","note":null,"tag":"code","net_saved":-49},{"id":"g-20261019T115129-13c6","ts":"2026-10-19T11:51:29+00:00","provider":"gemini","model":"default","account":"1","mode":"text","ok":true,"ms":129629,"in":8254,"out":1443,"verdict":"used","note":null,"tag":"design","net_saved":640},{"id":"g-20261019T114041-a1e4","ts":"2026-10-19T11:40:41+00:00","provider":"gemini","model":"default","account":"1","mode":"text","ok":true,"ms":13280,"in":7725,"out":100,"verdict":"used","note":null,"tag":"code","net_saved":48},{"id":"o-20261019T112747-d081","ts":"2026-10-19T11:27:47+00:00","provider":"openrouter","model":"thinkingmachines/inkling:free","account":"1","mode":"text","ok":true,"ms":1508,"in":2032,"out":28,"verdict":null,"note":null,"tag":null,"net_saved":null},{"id":"g-20261019T112113-fa5c","ts":"2026-10-19T11:21:13+00:00","provider":"gemini","model":"gemini-3.8-flash","account":"2","mode":"text","ok":true,"ms":4896,"in":9869,"out":1,"verdict":null,"note":null,"tag":null,"net_saved":null},{"id":"k-20261019T111820-24c9","ts":"2026-10-19T11:18:20+00:00","provider":"kimi","model":"kimi-for-coding","account":"1","mode":"text","ok":true,"ms":138131,"in":1474,"out":6388,"verdict":"used","note":null,"tag":"code","net_saved":4064},{"id":"k-20261019T111000-e305","ts":"2026-10-19T11:10:00+00:00","provider":"kimi","model":"kimi-for-coding","account":"1","mode":"text","ok":true,"ms":3452,"in":0,"out":38,"verdict":"used","note":null,"tag":null,"net_saved":null},{"id":null,"ts":"2026-10-19T11:07:32+00:00","provider":"kimi","model":"kimi-for-coding","account":"1","mode":"text","ok":true,"ms":1956,"in":2056,"out":26,"verdict":null,"note":null,"tag":null,"net_saved":null}],"savings":{"since":"2026-10-17T09:59:59.602000+00:00","net":26164,"counted":9,"uncounted":4,"by_provider":[{"key":"kimi","net":25843,"calls":5},{"key":"gemini","net":370,"calls":3},{"key":"openrouter","net":-49,"calls":1}],"by_tag":[{"key":"review","net":12758,"calls":1},{"key":"draft","net":8343,"calls":1},{"key":"code","net":4063,"calls":3},{"key":"summary","net":996,"calls":1},{"key":"design","net":640,"calls":1},{"key":"untagged","net":-636,"calls":2}]},"public":true};
+const DATA = {"generated_at":"2026-10-20T12:29:12.582444+00:00","limits":{"claude":{"status":"ok","plan":"Team","windows":[{"label":"5-hour limit","percentUsed":9,"resetsAt":"2026-10-20T16:19:59.742Z","resetsIn":"3h 52m"},{"label":"Weekly \u00b7 all models","percentUsed":73,"resetsAt":"2026-10-24T09:59:59.742Z","resetsIn":"3d 21h"},{"label":"Weekly \u00b7 Fable","percentUsed":0,"resetsAt":"2026-10-24T10:00:00.000Z","resetsIn":"3d 21h"}],"extraUsage":{"enabled":false,"currency":"USD"}},"kimi":{"status":"ok","windows":[{"label":"5-hour limit","percentUsed":3,"resetsAt":"2026-10-20T13:17:46Z"},{"label":"Weekly","percentUsed":22,"resetsAt":"2026-10-24T20:17:47Z"}]},"gemini":{"status":"no_api","note":"Google has no usage API for AI Studio keys; counts below come from the local log","accounts":[{"account":"1","calls_today":0,"failed_today":0,"tier":"paid"},{"account":"2","calls_today":0,"failed_today":0,"tier":"free"}]},"openrouter":{"status":"ok","free_tier":false,"daily_cap":1000,"calls_today":0,"failed_today":0,"windows":[{"label":"Free requests today","percentUsed":0,"resetsAt":"2026-10-21T00:00:00+00:00"}],"credits_used":0}},"models":[{"provider":"kimi","model":"kimi-for-coding","account":"1","calls_total":10,"calls_7d":10,"calls_30d":10,"ok":9,"failed":1,"success_rate":0.9,"tokens_in":59855,"tokens_out":71004,"avg_ms":181439,"verdicts":{"used":3,"fixed":5,"discarded":0,"unrated":2},"usefulness":1.0,"used_as_is":0.375,"last_used":"2026-10-20T09:15:38+00:00","net_saved":36574,"net_counted":8},{"provider":"gemini","model":"default","account":"1","calls_total":3,"calls_7d":3,"calls_30d":3,"ok":2,"failed":1,"success_rate":0.6666666666666666,"tokens_in":15979,"tokens_out":1543,"avg_ms":140969,"verdicts":{"used":2,"fixed":0,"discarded":0,"unrated":1},"usefulness":1.0,"used_as_is":1.0,"last_used":"2026-10-19T13:57:33+00:00","net_saved":370,"net_counted":3},{"provider":"gemini","model":"gemini-3.8-flash","account":"2","calls_total":1,"calls_7d":1,"calls_30d":1,"ok":1,"failed":0,"success_rate":1.0,"tokens_in":9869,"tokens_out":1,"avg_ms":4896,"verdicts":{"used":0,"fixed":0,"discarded":0,"unrated":1},"usefulness":null,"used_as_is":null,"last_used":"2026-10-19T11:21:13+00:00","net_saved":null,"net_counted":0},{"provider":"openrouter","model":"poolside/laguna-s-2.1:free","account":"1","calls_total":1,"calls_7d":1,"calls_30d":1,"ok":1,"failed":0,"success_rate":1.0,"tokens_in":2901,"tokens_out":1385,"avg_ms":42593,"verdicts":{"used":0,"fixed":1,"discarded":0,"unrated":0},"usefulness":1.0,"used_as_is":0.0,"last_used":"2026-10-19T13:03:19+00:00","net_saved":-49,"net_counted":1},{"provider":"openrouter","model":"thinkingmachines/inkling:free","account":"1","calls_total":1,"calls_7d":1,"calls_30d":1,"ok":1,"failed":0,"success_rate":1.0,"tokens_in":2032,"tokens_out":28,"avg_ms":1508,"verdicts":{"used":0,"fixed":0,"discarded":0,"unrated":1},"usefulness":null,"used_as_is":null,"last_used":"2026-10-19T11:27:47+00:00","net_saved":null,"net_counted":0}],"claude_models":{"since":"2026-10-17T09:59:59.742000+00:00","models":[{"model":"claude-opus-5-5","messages":10240,"input":20602,"output":6787969,"cache_read":1944684978,"cache_write":34217987,"share":0.868250450723556},{"model":"claude-sonnet-5-5","messages":1718,"input":3470,"output":1029860,"cache_read":326258873,"cache_write":6339374,"share":0.1317295952857418},{"model":"claude-haiku-5-5","messages":24,"input":48,"output":156,"cache_read":1313478,"cache_write":218395,"share":1.9953990702207794e-05}]},"daily":[{"date":"2026-10-07","kimi":0,"gemini":0,"openrouter":0,"claude":0},{"date":"2026-10-08","kimi":0,"gemini":0,"openrouter":0,"claude":0},{"date":"2026-10-09","kimi":0,"gemini":0,"openrouter":0,"claude":0},{"date":"2026-10-10","kimi":0,"gemini":0,"openrouter":0,"claude":0},{"date":"2026-10-11","kimi":0,"gemini":0,"openrouter":0,"claude":0},{"date":"2026-10-12","kimi":0,"gemini":0,"openrouter":0,"claude":0},{"date":"2026-10-13","kimi":0,"gemini":0,"openrouter":0,"claude":0},{"date":"2026-10-14","kimi":0,"gemini":0,"openrouter":0,"claude":0},{"date":"2026-10-15","kimi":0,"gemini":0,"openrouter":0,"claude":0},{"date":"2026-10-16","kimi":0,"gemini":0,"openrouter":0,"claude":0},{"date":"2026-10-17","kimi":0,"gemini":0,"openrouter":0,"claude":0},{"date":"2026-10-18","kimi":0,"gemini":0,"openrouter":0,"claude":0},{"date":"2026-10-19","kimi":7,"gemini":4,"openrouter":2,"claude":0},{"date":"2026-10-20","kimi":3,"gemini":0,"openrouter":0,"claude":0}],"recent":[{"id":"k-20261020T091538-7386","ts":"2026-10-20T09:15:38+00:00","provider":"kimi","model":"kimi-for-coding","account":"1","mode":"text","ok":true,"ms":45766,"in":3240,"out":1688,"verdict":"fixed","note":null,"tag":"design","net_saved":6},{"id":"k-20261020T081536-b3f1","ts":"2026-10-20T08:15:36+00:00","provider":"kimi","model":"kimi-for-coding","account":"1","mode":"text","ok":true,"ms":575451,"in":3947,"out":24745,"verdict":"fixed","note":null,"tag":"code","net_saved":10627},{"id":"k-20261020T071936-7804","ts":"2026-10-20T07:19:36+00:00","provider":"kimi","model":"kimi-for-coding","account":"1","mode":"text","ok":true,"ms":18846,"in":2317,"out":781,"verdict":"fixed","note":null,"tag":"review","net_saved":98},{"id":"k-20261019T181251-931e","ts":"2026-10-19T18:12:51+00:00","provider":"kimi","model":"kimi-for-coding","account":"1","mode":"text","ok":true,"ms":429824,"in":3009,"out":18568,"verdict":"fixed","note":null,"tag":"draft","net_saved":8343},{"id":"k-20261019T145654-10ab","ts":"2026-10-19T14:56:54+00:00","provider":"kimi","model":"kimi-for-coding","account":"1","mode":"text","ok":true,"ms":66830,"in":5668,"out":2432,"verdict":"fixed","note":null,"tag":"summary","net_saved":996},{"id":"k-20261019T145638-c247","ts":"2026-10-19T14:56:38+00:00","provider":"kimi","model":"kimi-for-coding","account":"1","mode":"agent","ok":true,"ms":254139,"in":38144,"out":16338,"verdict":"used","note":null,"tag":"review","net_saved":12758},{"id":"k-20261019T140339-aa66","ts":"2026-10-19T14:03:39+00:00","provider":"kimi","model":"kimi-for-coding","account":"1","mode":"text","ok":false,"ms":280000,"in":null,"out":null,"verdict":null,"note":null,"tag":null,"net_saved":-318},{"id":"g-20261019T135733-72a0","ts":"2026-10-19T13:57:33+00:00","provider":"gemini","model":"default","account":"1","mode":"text","ok":false,"ms":280000,"in":null,"out":null,"verdict":null,"note":null,"tag":null,"net_saved":-318},{"id":"o-20261019T130319-0dbd","ts":"2026-10-19T13:03:19+00:00","provider":"openrouter","model":"poolside/laguna-s-2.1:free","account":"1","mode":"text","ok":true,"ms":42593,"in":2901,"out":1385,"verdict":"fixed","note":null,"tag":"code","net_saved":-49},{"id":"g-20261019T115129-13c6","ts":"2026-10-19T11:51:29+00:00","provider":"gemini","model":"default","account":"1","mode":"text","ok":true,"ms":129629,"in":8254,"out":1443,"verdict":"used","note":null,"tag":"design","net_saved":640},{"id":"g-20261019T114041-a1e4","ts":"2026-10-19T11:40:41+00:00","provider":"gemini","model":"default","account":"1","mode":"text","ok":true,"ms":13280,"in":7725,"out":100,"verdict":"used","note":null,"tag":"code","net_saved":48},{"id":"o-20261019T112747-d081","ts":"2026-10-19T11:27:47+00:00","provider":"openrouter","model":"thinkingmachines/inkling:free","account":"1","mode":"text","ok":true,"ms":1508,"in":2032,"out":28,"verdict":null,"note":null,"tag":null,"net_saved":null},{"id":"g-20261019T112113-fa5c","ts":"2026-10-19T11:21:13+00:00","provider":"gemini","model":"gemini-3.8-flash","account":"2","mode":"text","ok":true,"ms":4896,"in":9869,"out":1,"verdict":null,"note":null,"tag":null,"net_saved":null},{"id":"k-20261019T111820-24c9","ts":"2026-10-19T11:18:20+00:00","provider":"kimi","model":"kimi-for-coding","account":"1","mode":"text","ok":true,"ms":138131,"in":1474,"out":6388,"verdict":"used","note":null,"tag":"code","net_saved":4064},{"id":"k-20261019T111000-e305","ts":"2026-10-19T11:10:00+00:00","provider":"kimi","model":"kimi-for-coding","account":"1","mode":"text","ok":true,"ms":3452,"in":0,"out":38,"verdict":"used","note":null,"tag":null,"net_saved":null},{"id":null,"ts":"2026-10-19T11:07:32+00:00","provider":"kimi","model":"kimi-for-coding","account":"1","mode":"text","ok":true,"ms":1956,"in":2056,"out":26,"verdict":null,"note":null,"tag":null,"net_saved":null}],"savings":{"since":"2026-10-17T09:59:59.742000+00:00","net":36895,"counted":12,"uncounted":4,"by_provider":[{"key":"kimi","net":36574,"calls":8},{"key":"gemini","net":370,"calls":3},{"key":"openrouter","net":-49,"calls":1}],"by_tag":[{"key":"code","net":14690,"calls":4},{"key":"review","net":12856,"calls":2},{"key":"draft","net":8343,"calls":1},{"key":"summary","net":996,"calls":1},{"key":"design","net":646,"calls":2},{"key":"untagged","net":-636,"calls":2}]},"activity":null,"public":true};
 const PROVIDERS = { claude: "Claude", kimi: "Kimi", gemini: "Gemini", openrouter: "OpenRouter" };
 const $ = (id) => document.getElementById(id);
 const pkey = (p) => (Object.hasOwn(PROVIDERS, p) ? p : "other");
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const pct = (x) => (x == null ? "—" : Math.round(x * 100) + "%");
-const fmtNum = (n) => (n == null ? "—" : n >= 1e6 ? (n / 1e6).toFixed(1) + "M" : n >= 1e3 ? (n / 1e3).toFixed(1) + "k" : String(n));
+const fmtNum = (n) => (n == null ? "—" : n >= 1e9 ? (n / 1e9).toFixed(1) + "B" : n >= 1e6 ? (n / 1e6).toFixed(1) + "M" : n >= 1e3 ? (n / 1e3).toFixed(1) + "k" : String(n));
 const fmtMs = (ms) => (ms == null ? "—" : ms < 1000 ? ms + " ms" : (ms / 1000).toFixed(1) + " s");
 
 function relTime(iso, future) {
@@ -650,6 +686,61 @@ function renderClaudeModels(cm) {
     <p class="note">From Claude Code sessions on this Mac, including subagents. Chats on claude.ai and other devices aren't included.</p>`;
 }
 
+const MIX = { input: ["Fresh input", "haiku"], cache_write: ["Cache writes", "sonnet"], cache_read: ["Cache reads", "opus"], output: ["Output", "fable"] };
+const prettyTool = (g) => g.startsWith("mcp:") ? `${g.slice(4).replace(/^plugin_[^_]+_/, "").replace(/[-_]/g, " ")} <span class="sub">MCP</span>` : esc(g);
+const prettySkill = (n) => { const [a, b] = String(n).split(":"); return b && b !== a ? `${esc(b)} <span class="sub">${esc(a)}</span>` : esc(b || a); };
+function uaList(title, head, rows, cells, empty) {
+  return `<div class="ua-card sticker"><h3>${title}</h3>${rows.length ? `<div class="cm-rows">
+    <div class="cm-row ua-row head">${head.map((h, i) => `<span${i ? ' class="r"' : ""}>${h}</span>`).join("")}</div>
+    ${rows.map((r) => `<div class="cm-row ua-row">${cells(r).map((c, i) => `<span class="${i ? "r num" : "name"}">${c}</span>`).join("")}</div>`).join("")}
+  </div>` : `<p class="note">${empty}</p>`}</div>`;
+}
+function renderActivity(a) {
+  if (!a || !a.totals || !a.totals.weighted) { $("ua-section").hidden = true; return; }
+  $("ua-section").hidden = false;
+  const t = a.totals;
+  const mix = (a.token_mix || []).filter((m) => m.share > 0);
+  $("ua-sum").innerHTML = `
+    <div class="sav-big">
+      <span class="eyebrow">Last ${a.days} days</span>
+      <span class="figure num">${fmtNum(Math.round(t.weighted))}</span>
+      <span class="line">Weighted tokens, roughly what Claude Code cost you · ${fmtNum(t.sessions)} sessions · ${fmtNum(t.prompts)} prompts · ${fmtNum(t.assistant_messages)} replies</span>
+    </div>
+    <ol class="ua-ins">${(a.insights || []).map((s) => `<li>${esc(s)}</li>`).join("") || "<li>Nothing stands out yet.</li>"}</ol>
+    <div class="mix">
+      <div class="cm-bar" role="img" aria-label="${mix.map((m) => `${MIX[m.kind][0]} ${Math.round(m.share * 100)}%`).join(", ")}">
+        ${mix.filter((m) => m.share >= 0.005).map((m) => `<i style="width:${m.share * 100}%;background:var(--m-${MIX[m.kind][1]})" title="${MIX[m.kind][0]}: ${fmtNum(m.tokens)} tokens"></i>`).join("")}
+      </div>
+      <div class="legend">${mix.map((m) => `<span><span class="dot" style="background:var(--m-${MIX[m.kind][1]})"></span>${MIX[m.kind][0]} <span class="num">${m.share >= 0.005 ? Math.round(m.share * 100) + "%" : "<1%"}</span></span>`).join("")}</div>
+      <p class="note">Weighted = input-token equivalents: cache reads count 0.1, cache writes 1.25–2, output 5, scaled by model (Haiku 0.2, Sonnet 0.6, Opus 1, Fable 3). An estimate for comparing, not a bill.</p>
+    </div>`;
+  const skills = (a.skills || []).slice(0, 10), maxW = Math.max(1, ...skills.map((s) => s.weighted));
+  const hours = a.hours || [], maxH = Math.max(1, ...hours);
+  const peak = hours.indexOf(maxH);
+  const WD = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"], wd = a.weekdays || [];
+  $("ua-grid").innerHTML =
+    uaList("Most used skills", ["Skill", "Uses", "Sessions", "Tokens while active"], skills, (s) => [
+      `${prettySkill(s.name)}<div class="bar" aria-hidden="true"><i style="width:${s.weighted / maxW * 100}%"></i></div>`,
+      fmtNum(s.uses), fmtNum(s.sessions), `${fmtNum(Math.round(s.weighted))}<span class="sub">${fmtNum(Math.round(s.per_use))}/use</span>`,
+    ], "No skills loaded in this window.") +
+    uaList("Where tool output piles up", ["Tool", "Calls", "Avg chars", "Chars returned"], (a.tool_groups || []).slice(0, 8), (g) => [
+      prettyTool(g.name), fmtNum(g.calls), fmtNum(g.avg_chars), fmtNum(g.result_chars),
+    ], "No tool calls in this window.") +
+    ((a.projects || []).length ? uaList("Projects", ["Project", "Sessions", "Prompts", "Share"], a.projects, (p) => [
+      esc(p.name), fmtNum(p.sessions), fmtNum(p.prompts), pct(p.share),
+    ], "") : "") +
+    ((a.sessions || []).length ? uaList("Heaviest sessions", ["Session", "Prompts", "Avg context", "Tokens"], a.sessions, (s) => [
+      `<span title="${esc(s.title)} · ${esc(s.project)} · ${esc(shortDate(s.last))}">${esc(s.title)}</span>`, fmtNum(s.prompts), fmtNum(s.avg_context), fmtNum(Math.round(s.weighted)),
+    ], "") : "") +
+    `<div class="ua-card sticker"><h3>When you work</h3>
+      <div class="ua-hours" role="img" aria-label="Prompts per hour of the day, busiest around ${peak}:00">
+        ${hours.map((n, h) => `<i class="${n ? "" : "zero"}" style="height:${n ? Math.max(6, n / maxH * 100) : 0}%" title="${String(h).padStart(2, "0")}:00 · ${n} prompts"></i>`).join("")}
+      </div>
+      <div class="ua-axis"><span>00</span><span>06</span><span>12</span><span>18</span></div>
+      <div class="ua-days">${wd.map((n, i) => `<span class="sav-chip tag">${WD[i]} <span class="num">${fmtNum(n)}</span></span>`).join("")}</div>
+      <p class="note">Prompts you sent, by local hour and weekday.</p>
+    </div>`;
+}
 function meter(w) {
   const p = Math.max(0, Math.min(100, w.percentUsed ?? 0));
   const cls = (p >= 85 ? "warn" : "") + (p === 0 ? " zero" : "");
@@ -774,7 +865,7 @@ function renderRecent(rows) {
 function renderAll() {
 if (!DATA) {
   $("stamp").textContent = "No snapshot yet. Say “usage” in Claude Code to fill this page.";
-  $("hero").hidden = true; $("cm-section").hidden = true; renderLimits({}); $("savings").hidden = true; renderModels([]); renderChart([]); renderRecent([]);
+  $("hero").hidden = true; $("cm-section").hidden = true; $("ua-section").hidden = true; renderLimits({}); $("savings").hidden = true; renderModels([]); renderChart([]); renderRecent([]);
 } else {
   const paintStamp = () => {
     const ageH = (Date.now() - new Date(DATA.generated_at)) / 36e5;
@@ -786,6 +877,7 @@ if (!DATA) {
   clearInterval(window.__stampTimer); window.__stampTimer = setInterval(paintStamp, 30000);
   renderHero(DATA.limits || {});
   renderClaudeModels(DATA.claude_models);
+  renderActivity(DATA.activity);
   renderLimits(DATA.limits || {});
   renderSavings(DATA.savings);
   renderModels(DATA.models || []);
